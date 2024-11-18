@@ -4,9 +4,14 @@ import RootLayout from "@/components/layouts/RootLayout";
 import { paths } from "@/constants/paths";
 import Home from "@/pages/Home";
 import Login from "@/pages/Login";
+import Menu from "@/pages/Menu";
 import Users from "@/pages/Users";
 
 const router = createBrowserRouter([
+  {
+    path: paths.MENU,
+    element: <Menu />,
+  },
   {
     path: paths.HOME,
     element: <RootLayout />,
