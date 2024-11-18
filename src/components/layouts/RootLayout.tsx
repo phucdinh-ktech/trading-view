@@ -4,9 +4,9 @@ import Header from "@/components/layouts/Header";
 
 const RootLayout = () => {
   return (
-    <div>
+    <div className="relative">
       <Header />
-      <div className="mt-[60px] min-h-[100vh]">
+      <div className="max-w-[1440px] mx-auto px-[20px] mt-[80px]">
         <Outlet />
       </div>
     </div>
