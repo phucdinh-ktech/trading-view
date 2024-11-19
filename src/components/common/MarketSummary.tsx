@@ -5,7 +5,11 @@ import AreaChartComponent from "@/components/common/Charts/AreaChart";
 import TabsComponent from "@/components/common/Tabs";
 import WrapperMarket from "@/components/pages/home/WrapperMarket";
 
+import useWindowSize from "../../hooks/useWindowSize";
+
 const MarketSummary = () => {
+  const { width } = useWindowSize();
+
   const items: TabsProps["items"] = [
     {
       key: "1",
@@ -27,13 +31,13 @@ const MarketSummary = () => {
     console.log(key);
   };
   return (
-    <div className="mt-[32px] mb-[80px]">
+    <div className="mt-[24px] md:mt-[32px] mb-[12px] md:mb-[32px]">
       <p className="text-[28px] text-blackApp font-semibold leading-[36px] mb-[24px]">
         Market summary
         <RightOutlined className="text-[20px] mr-[4px]" />
       </p>
       <TabsComponent items={items} onChange={onChange} />
-      <AreaChartComponent />
+      {width >= 768 && <AreaChartComponent />}
     </div>
   );
 };

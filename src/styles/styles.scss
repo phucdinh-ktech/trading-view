@@ -1,2 +1,6 @@
 @use "./antds/tabs.scss";
-@use "./swiper.scss"
+@use "./swiper.scss";
+
+#tv-attr-logo {
+  display: none;
+}
