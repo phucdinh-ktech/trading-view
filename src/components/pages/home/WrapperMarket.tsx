@@ -45,10 +45,6 @@ const WrapperMarket = () => {
         <Swiper
           className="mySwiper"
           modules={[Navigation]}
-          onSwiper={swiper => {
-            swiperRef.current = swiper;
-          }}
-          onSlideChange={handleSlideChange}
           breakpoints={{
             300: { slidesPerView: 2.2, spaceBetween: 4 },
             400: {
@@ -77,6 +73,7 @@ const WrapperMarket = () => {
         onSwiper={swiper => {
           swiperRef.current = swiper;
         }}
+        onSlideChange={handleSlideChange}
       >
         <SwiperSlide className="h-full">
           <div className="flex justify-start items-center gap-[12px] md:gap-[24px]">

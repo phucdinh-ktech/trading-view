@@ -31,7 +31,7 @@ const MarketSummary = () => {
     console.log(key);
   };
   return (
-    <div className="mt-[24px] md:mt-[32px] mb-[12px] md:mb-[32px]">
+    <div className="mt-[24px] md:mt-[32px] md:mb-[24px]">
       <p className="text-[28px] text-blackApp font-semibold leading-[36px] mb-[24px]">
         Market summary
         <RightOutlined className="text-[20px] mr-[4px]" />
