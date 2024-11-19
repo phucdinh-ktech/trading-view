@@ -30,7 +30,7 @@ const WrapperMarket = () => {
       return;
     }
 
-    if (swiper.activeIndex === length - 1) {
+    if (swiper.activeIndex === 2) {
       setIsLast(true);
       return;
     }
