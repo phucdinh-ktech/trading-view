@@ -8,7 +8,7 @@ interface BlogSwiperProps {
 function BlogCard(props: BlogSwiperProps) {
   const { thumbnail, title, description, actor, time } = props;
   return (
-    <div className="flex flex-col justify-between gap-[12px] rounded-[10px] hover:bg-[#F0F3FA] duration-300 h-[400px] overflow-hidden p-[10px]">
+    <div className="flex flex-col justify-between gap-[12px] rounded-[10px] hover:bg-[#F0F3FA] duration-300 h-[400px] overflow-hidden">
       <img
         src={thumbnail}
         alt="thumbnail-blog"

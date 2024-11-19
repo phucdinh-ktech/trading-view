@@ -3,7 +3,7 @@ import { useState } from "react";
 import RangTimeItem from "@/components/common/RangTime/RangTimeItem";
 
 const WrapperRangTime = () => {
-  const [selectedKey, setSelectedKey] = useState<string>();
+  const [selectedKey, setSelectedKey] = useState<string>("1D");
 
   const handleChangeKey = (time: string) => {
     setSelectedKey(time);

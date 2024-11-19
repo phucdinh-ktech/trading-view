@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { Navigation } from "swiper/modules";
 import { Swiper, SwiperClass, SwiperSlide } from "swiper/react";
 
