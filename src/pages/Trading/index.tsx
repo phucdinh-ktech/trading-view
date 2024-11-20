@@ -1,6 +1,7 @@
 import { Splitter } from "antd";
 import { useState } from "react";
 
+import CandleStickChart from "@/components/common/Charts/CandleStickChart";
 import InformationDetail from "@/components/common/InfomationDetail";
 import SideBarChart from "@/components/common/SideBarChart";
 import useWindowSize from "@/utils/hooks/useWindowSize";
@@ -15,7 +16,7 @@ const Trading = () => {
   return (
     <>
       {size?.width < 768 ? (
-        <div>Trading View</div>
+        <CandleStickChart />
       ) : (
         <Splitter
           style={{
@@ -25,9 +26,7 @@ const Trading = () => {
           onResize={handleResize}
         >
           <Splitter.Panel collapsible min="30%" size={sizes[0]}>
-            <div className="flex-grow">
-              <p>Trading view</p>
-            </div>
+            <CandleStickChart sizes={sizes} />
           </Splitter.Panel>
 
           <Splitter.Panel size={sizes[1]}>
