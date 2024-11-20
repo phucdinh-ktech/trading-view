@@ -3,29 +3,28 @@
     "id": 1,
     "title": "Sản phẩm",
     "children": [
-        {
-            "header": "",
-            "children": [
-              { "title": "Siêu biểu đồ", "icon": "" }
-            
-            ]
-          },
+      {
+        "header": "",
+        "children": [
+          { "title": "Siêu biểu đồ", "icon": "", "path": "/trading" }
+        ]
+      },
       {
         "header": "Công cụ riêng lẻ",
         "children": [
-          { "title": "Bộ lọc", "icon": "" },
+          { "title": "Bộ lọc", "icon": "", "path": "" },
           { "title": "Lịch", "icon": "" },
-          { "title": "Quyền chọn", "icon": "" },
-          { "title": "Dòng tin tức", "icon": "" }
+          { "title": "Quyền chọn", "icon": "", "path": "" },
+          { "title": "Dòng tin tức", "icon": "", "path": "" }
         ]
       },
       {
         "header": "Giới thiệu",
         "children": [
-          { "title": "Đánh giá", "icon": "" },
-          { "title": "Tính năng", "icon": "" },
-          { "title": "Có gì mới", "icon": "" },
-          { "title": "Dữ liệu thị trường", "icon": "" }
+          { "title": "Đánh giá", "icon": "", "path": "" },
+          { "title": "Tính năng", "icon": "", "path": "" },
+          { "title": "Có gì mới", "icon": "", "path": "" },
+          { "title": "Dữ liệu thị trường", "icon": "", "path": "" }
         ]
       }
     ]
@@ -37,8 +36,8 @@
       {
         "header": "Thảo luận",
         "children": [
-          { "title": "Forum", "icon": "" },
-          { "title": "Chat", "icon": "" }
+          { "title": "Forum", "icon": "", "path": "" },
+          { "title": "Chat", "icon": "", "path": "" }
         ]
       }
     ]
@@ -50,8 +49,8 @@
       {
         "header": "Danh mục",
         "children": [
-          { "title": "Market 1", "icon": "" },
-          { "title": "Market 2", "icon": "" }
+          { "title": "Market 1", "icon": "", "path": "" },
+          { "title": "Market 2", "icon": "", "path": "" }
         ]
       }
     ]
@@ -63,8 +62,8 @@
       {
         "header": "Danh mục",
         "children": [
-          { "title": "Market 1", "icon": "" },
-          { "title": "Market 2", "icon": "" }
+          { "title": "Market 1", "icon": "", "path": "" },
+          { "title": "Market 2", "icon": "", "path": "" }
         ]
       }
     ]
@@ -76,8 +75,8 @@
       {
         "header": "Danh mục",
         "children": [
-          { "title": "Market 1", "icon": "" },
-          { "title": "Market 2", "icon": "" }
+          { "title": "Market 1", "icon": "", "path": "" },
+          { "title": "Market 2", "icon": "", "path": "" }
         ]
       }
     ]
@@ -89,8 +88,8 @@
       {
         "header": "Danh mục",
         "children": [
-          { "title": "Market 1", "icon": "" },
-          { "title": "Market 2", "icon": "" }
+          { "title": "Market 1", "icon": "", "path": "" },
+          { "title": "Market 2", "icon": "", "path": "" }
         ]
       }
     ]

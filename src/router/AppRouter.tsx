@@ -5,6 +5,7 @@ import { paths } from "@/constants/paths";
 import Home from "@/pages/Home";
 import Login from "@/pages/Login";
 import Menu from "@/pages/Menu";
+import Trading from "@/pages/Trading";
 import Users from "@/pages/Users";
 
 const router = createBrowserRouter([
@@ -27,6 +28,10 @@ const router = createBrowserRouter([
       {
         path: paths.LOGIN,
         element: <Login />,
+      },
+      {
+        path: paths.TRADING,
+        element: <Trading />,
       },
     ],
   },

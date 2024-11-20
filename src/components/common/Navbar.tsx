@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 import icons from "@/assets/icons";
 
 import navbars from "../../navBar.json";
@@ -20,30 +22,33 @@ function NavBar() {
                 )}
                 <ul>
                   {child?.children?.map((item, subIndex) => (
-                    <li
-                      key={subIndex}
-                      className="p-[10px] hover:bg-[#F0F3FA] cursor-pointer rounded-[5px]"
-                    >
-                      <button className="w-full flex items-center gap-[5px] justify-between">
-                        <div className="flex items-center gap-[10px]">
-                          {item?.icon && (
+                    <Link to={item?.path || "#"}>
+                      {" "}
+                      <li
+                        key={subIndex}
+                        className="p-[10px] hover:bg-[#F0F3FA] cursor-pointer rounded-[5px]"
+                      >
+                        <button className="w-full flex items-center gap-[5px] justify-between">
+                          <div className="flex items-center gap-[10px]">
+                            {item?.icon && (
+                              <img
+                                src={item?.icon}
+                                alt="icon"
+                                className="w-[16px] h-[16px]"
+                              />
+                            )}
+                            <span className="text-nowrap">{item?.title}</span>
+                          </div>
+                          {child?.header && (
                             <img
-                              src={item?.icon}
+                              src={icons.chevronRight}
                               alt="icon"
                               className="w-[16px] h-[16px]"
                             />
                           )}
-                          <span className="text-nowrap">{item?.title}</span>
-                        </div>
-                        {child?.header && (
-                          <img
-                            src={icons.chevronRight}
-                            alt="icon"
-                            className="w-[16px] h-[16px]"
-                          />
-                        )}
-                      </button>
-                    </li>
+                        </button>
+                      </li>
+                    </Link>
                   ))}
                 </ul>
               </div>
