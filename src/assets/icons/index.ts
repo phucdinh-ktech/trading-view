@@ -1,5 +1,7 @@
 import arrowDown from "./arrow-down.svg";
 import arrowUp from "./arrow-up.svg";
+import arrowRightWhite from "./arrowRightWhite.svg";
+import check from "./check.svg";
 import chevronRight from "./chevron-right.svg";
 import edit from "./edit.svg";
 import global from "./globe.svg";
@@ -9,6 +11,7 @@ import more from "./more-horizontal.svg";
 import chart from "./pie-chart.svg";
 import plus from "./plus.svg";
 import search from "./search.svg";
+import setting from "./setting.svg";
 import user from "./user.svg";
 import close from "./x.svg";
 const icons = {
@@ -25,5 +28,8 @@ const icons = {
   chevronRight,
   arrowDown,
   arrowUp,
+  arrowRightWhite,
+  check,
+  setting,
 };
 export default icons;
