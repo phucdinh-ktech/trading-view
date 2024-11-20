@@ -62,7 +62,7 @@ function generateHistogramData(
 }
 
 interface ICandlestickChartProps {
-  sizes?: number[];
+  sizes?: (number | string)[];
 }
 const CandleStickChart = (props: ICandlestickChartProps) => {
   const { sizes } = props;
@@ -203,7 +203,7 @@ const CandleStickChart = (props: ICandlestickChartProps) => {
 
   return (
     <div
-      className="w-full relative h-full py-[10px] flex items-center justify-center"
+      className="w-full relative h-[calc(100vh-120px)] md:h-full py-[10px] flex items-center justify-center"
       onClick={handleLeftClick}
       ref={chartContainerRef}
       onContextMenu={handleRightClick}
