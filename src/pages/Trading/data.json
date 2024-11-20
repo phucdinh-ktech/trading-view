@@ -1,0 +1,180 @@
+[
+  {
+    "group": "",
+    "symbol": "RELIA",
+    "last": 1241.65,
+    "chg": -19.1,
+    "chg%": "-1.51%",
+    "icon": "https://cdn.pixabay.com/photo/2021/04/30/16/47/bitcoin-logo-6219385_1280.png"
+  },
+  {
+    "group": "",
+    "symbol": "TCS",
+    "last": 3245.5,
+    "chg": 12.7,
+    "chg%": "0.39%",
+    "icon": "https://cdn.pixabay.com/photo/2021/04/30/16/47/bitcoin-logo-6219385_1280.png"
+  },
+  {
+    "group": "",
+    "symbol": "INFY",
+    "last": 1489.4,
+    "chg": -8.2,
+    "chg%": "-0.55%",
+    "icon": "https://cdn.pixabay.com/photo/2021/04/30/16/47/bitcoin-logo-6219385_1280.png"
+  },
+  {
+    "group": "",
+    "symbol": "WIPRO",
+    "last": 405.3,
+    "chg": 3.5,
+    "chg%": "0.87%",
+    "icon": "https://cdn.pixabay.com/photo/2021/04/30/16/47/bitcoin-logo-6219385_1280.png"
+  },
+  {
+    "group": "STOCKS",
+    "symbol": "HDFC",
+    "last": 2745.25,
+    "chg": 18.35,
+    "chg%": "0.67%",
+    "icon": "https://cdn.pixabay.com/photo/2021/04/30/16/47/bitcoin-logo-6219385_1280.png"
+  },
+  {
+    "group": "STOCKS",
+    "symbol": "BAJAJ",
+    "last": 5934.15,
+    "chg": -45.65,
+    "chg%": "-0.76%",
+    "icon": "https://cdn.pixabay.com/photo/2021/04/30/16/47/bitcoin-logo-6219385_1280.png"
+  },
+  {
+    "group": "STOCKS",
+    "symbol": "AXIS",
+    "last": 856.75,
+    "chg": 10.5,
+    "chg%": "1.24%",
+    "icon": "https://cdn.pixabay.com/photo/2021/04/30/16/47/bitcoin-logo-6219385_1280.png"
+  },
+  {
+    "group": "FUTURES",
+    "symbol": "NIFTY",
+    "last": 18540.5,
+    "chg": 25.15,
+    "chg%": "0.14%",
+    "icon": "https://cdn.pixabay.com/photo/2021/04/30/16/47/bitcoin-logo-6219385_1280.png"
+  },
+  {
+    "group": "FUTURES",
+    "symbol": "BANKNIFTY",
+    "last": 42680.8,
+    "chg": 80.45,
+    "chg%": "0.19%",
+    "icon": "https://cdn.pixabay.com/photo/2021/04/30/16/47/bitcoin-logo-6219385_1280.png"
+  },
+  {
+    "group": "SORT",
+    "symbol": "ICICI",
+    "last": 902.3,
+    "chg": -12.8,
+    "chg%": "-1.4%",
+    "icon": "https://cdn.pixabay.com/photo/2021/04/30/16/47/bitcoin-logo-6219385_1280.png"
+  },
+  {
+    "group": "SORT",
+    "symbol": "SBI",
+    "last": 610.4,
+    "chg": 8.6,
+    "chg%": "1.43%",
+    "icon": "https://cdn.pixabay.com/photo/2021/04/30/16/47/bitcoin-logo-6219385_1280.png"
+  },
+  {
+    "group": "CRYPTO",
+    "symbol": "BTC",
+    "last": 56435.5,
+    "chg": -400.0,
+    "chg%": "-0.7%",
+    "icon": "https://cdn.pixabay.com/photo/2021/04/30/16/47/bitcoin-logo-6219385_1280.png"
+  },
+  {
+    "group": "CRYPTO",
+    "symbol": "ETH",
+    "last": 3475.4,
+    "chg": 65.3,
+    "chg%": "1.91%",
+    "icon": "https://cdn.pixabay.com/photo/2021/04/30/16/47/bitcoin-logo-6219385_1280.png"
+  },
+  {
+    "group": "CRYPTO",
+    "symbol": "DOGE",
+    "last": 0.1256,
+    "chg": 0.0015,
+    "chg%": "1.2%",
+    "icon": "https://cdn.pixabay.com/photo/2021/04/30/16/47/bitcoin-logo-6219385_1280.png"
+  },
+  {
+    "group": "COMMODITIES",
+    "symbol": "GOLD",
+    "last": 59405.25,
+    "chg": -50.3,
+    "chg%": "-0.08%",
+    "icon": "https://cdn.pixabay.com/photo/2021/04/30/16/47/bitcoin-logo-6219385_1280.png"
+  },
+  {
+    "group": "COMMODITIES",
+    "symbol": "SILVER",
+    "last": 712.4,
+    "chg": 4.8,
+    "chg%": "0.68%",
+    "icon": "https://cdn.pixabay.com/photo/2021/04/30/16/47/bitcoin-logo-6219385_1280.png"
+  },
+  {
+    "group": "COMMODITIES",
+    "symbol": "CRUDE OIL",
+    "last": 87.65,
+    "chg": -1.2,
+    "chg%": "-1.35%",
+    "icon": "https://cdn.pixabay.com/photo/2021/04/30/16/47/bitcoin-logo-6219385_1280.png"
+  },
+  {
+    "symbol": "SILVER",
+    "last": 712.4,
+    "chg": 4.8,
+    "chg%": "0.68%",
+    "icon": "https://cdn.pixabay.com/photo/2021/04/30/16/47/bitcoin-logo-6219385_1280.png"
+  },
+  {
+    "symbol": "SILVER",
+    "last": 712.4,
+    "chg": 4.8,
+    "chg%": "0.68%",
+    "icon": "https://cdn.pixabay.com/photo/2021/04/30/16/47/bitcoin-logo-6219385_1280.png"
+  },
+  {
+    "symbol": "SILVER",
+    "last": 712.4,
+    "chg": 4.8,
+    "chg%": "0.68%",
+    "icon": "https://cdn.pixabay.com/photo/2021/04/30/16/47/bitcoin-logo-6219385_1280.png"
+  },
+  {
+    "symbol": "SILVER",
+    "last": 712.4,
+    "chg": 4.8,
+    "chg%": "0.68%",
+    "icon": "https://cdn.pixabay.com/photo/2021/04/30/16/47/bitcoin-logo-6219385_1280.png"
+  },
+  {
+    "symbol": "SILVER",
+    "last": 712.4,
+    "chg": 4.8,
+    "chg%": "0.68%",
+    "icon": "https://cdn.pixabay.com/photo/2021/04/30/16/47/bitcoin-logo-6219385_1280.png"
+  },
+  {
+    "symbol": "SILVER",
+    "last": 712.4,
+    "chg": 4.8,
+    "chg%": "0.68%",
+    "icon": "https://cdn.pixabay.com/photo/2021/04/30/16/47/bitcoin-logo-6219385_1280.png"
+  }
+]
