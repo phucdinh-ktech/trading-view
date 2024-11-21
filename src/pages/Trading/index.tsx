@@ -10,6 +10,7 @@ import useWindowSize from "@/utils/hooks/useWindowSize";
 const Trading = () => {
   const [sizes, setSizes] = useState<(number | string)[]>(["70%", "30%"]);
   const size = useWindowSize();
+
   const handleResize = (newSizes: (number | string)[]) => {
     setSizes(newSizes);
   };
