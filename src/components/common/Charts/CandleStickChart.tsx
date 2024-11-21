@@ -5,16 +5,16 @@ import {
   IChartApi,
   MouseEventParams,
   UTCTimestamp,
+  CandlestickData,
+  HistogramData,
 } from "lightweight-charts";
 import { MouseEvent, useEffect, useMemo, useRef, useState } from "react";
 
-import icons from "@/assets/icons";
+import InfoMoveChart from "@/components/common/Charts/InfoMoveChart";
 import WrapperRangTime from "@/components/common/RangTime/WrapperRangTime";
 import WrapperSetting from "@/components/common/Setting/WrapperSetting";
 
 import useWindowSize from "../../../hooks/useWindowSize";
-import svgs from "@/assets/svgs";
-import InfoMoveChart from "@/components/common/Charts/InfoMoveChart";
 
 function generateCandlestickData(
   days: number,
@@ -76,11 +76,16 @@ const CandleStickChart = (props: ICandlestickChartProps) => {
 
   const [openMenu, setOpenMenu] = useState<boolean>(false);
   const popoverRef = useRef<TooltipRef | null>(null);
+  const [chartMoveData, setChartMoveData] = useState<{
+    candlestick: CandlestickData;
+    histogram: HistogramData;
+  }>();
   const [newPosition, setNewPosition] = useState({
     left: 0,
     top: 0,
   });
   const [price, setPrice] = useState<number>(0);
+
   const handleLeftClick = (e: MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
 
@@ -182,12 +187,12 @@ const CandleStickChart = (props: ICandlestickChartProps) => {
       candlestickSeries.setData(candlestickData);
 
       // Histogram
-      const historyChartSeries = chart.addHistogramSeries({
+      const histogramChartSeries = chart.addHistogramSeries({
         priceLineVisible: false,
         lastValueVisible: false,
       });
 
-      historyChartSeries.setData(histogramData);
+      histogramChartSeries.setData(histogramData);
 
       // config scale
       chart.timeScale().fitContent();
@@ -202,6 +207,22 @@ const CandleStickChart = (props: ICandlestickChartProps) => {
         const { y } = params.point;
         const price = candlestickSeries.coordinateToPrice(y);
         setPrice(Number(price));
+      });
+
+      chart.subscribeCrosshairMove((params: MouseEventParams) => {
+        if (!params || !params.point) return;
+
+        const candlestickData = params.seriesData.get(
+          candlestickSeries
+        ) as CandlestickData;
+        const histogramData = params.seriesData.get(
+          histogramChartSeries
+        ) as HistogramData;
+
+        setChartMoveData({
+          candlestick: candlestickData,
+          histogram: histogramData,
+        });
       });
     }
     return () => {
@@ -221,6 +242,12 @@ const CandleStickChart = (props: ICandlestickChartProps) => {
         ref={chartContainerRef}
         onContextMenu={handleRightClick}
       >
+        <InfoMoveChart
+          histogram={chartMoveData?.histogram}
+          candlestick={chartMoveData?.candlestick}
+        />
+      </div>
+      {width >= 768 && (
         <Popover
           ref={popoverRef}
           open={openMenu}
@@ -228,18 +255,22 @@ const CandleStickChart = (props: ICandlestickChartProps) => {
           content={<WrapperSetting price={price} />}
           arrow={false}
           overlayStyle={{
-            left: `${newPosition.left}px`,
-            top: "50%",
-            transform: "translateY(-50%)",
+            // left: newPosition.left ? `${newPosition.left}px` : 0,
+            // bottom: chartContainerRef.current?.clientHeight
+            //   ? `${(Number(chartContainerRef.current?.clientHeight) - 428) / 2}px`
+            //   : "10px",
+            inset: `auto auto  ${
+              chartContainerRef.current?.clientHeight
+                ? `${Math.max(0, Number(chartContainerRef.current?.clientHeight) - newPosition.top - 428)}px`
+                : "10px"
+            } ${newPosition.left ? `${newPosition.left}px` : 0} `,
           }}
           align={{
             overflow: { adjustX: true, adjustY: true },
           }}
           getPopupContainer={() => chartContainerRef.current || document.body}
-          rootClassName="hidden md:block"
         />
-        <InfoMoveChart />
-      </div>
+      )}
       <WrapperRangTime chart="candlestick" />
     </div>
   );
