@@ -53,7 +53,7 @@ function generateHistogramData(
   for (let i = 0; i < days; i++) {
     const time = (startTime + i * 24 * 60 * 60) as UTCTimestamp;
     const value = Math.floor(Math.random() * 75);
-    const color = value > 35 ? "#1a615b" : "#853441";
+    const color = value > 35 ? "#90d5c9" : "#f5a2a9";
 
     data.push({ time, value, color });
   }
@@ -135,18 +135,18 @@ const CandleStickChart = (props: ICandlestickChartProps) => {
         grid: {
           vertLines: {
             visible: true,
-            color: "#222631",
+            color: "#0505050f",
           },
           horzLines: {
             visible: true,
-            color: "#222631",
+            color: "#0505050f",
           },
         },
         crosshair: {
           mode: 0,
         },
         timeScale: {
-          borderColor: "#222631",
+          borderColor: "#0505050f",
           timeVisible: true,
         },
         rightPriceScale: {
@@ -154,6 +154,7 @@ const CandleStickChart = (props: ICandlestickChartProps) => {
           autoScale: true,
           ticksVisible: true,
           textColor: "black",
+          borderVisible: false,
         },
       });
 

@@ -2,6 +2,7 @@ import { Splitter } from "antd";
 import { useState } from "react";
 
 import CandleStickChart from "@/components/common/Charts/CandleStickChart";
+import ChartHeader from "@/components/common/Charts/ChartHeader";
 import InformationDetail from "@/components/common/InfomationDetail";
 import SideBarChart from "@/components/common/SideBarChart";
 import useWindowSize from "@/utils/hooks/useWindowSize";
@@ -15,6 +16,7 @@ const Trading = () => {
 
   return (
     <>
+      <ChartHeader />
       {size?.width < 768 ? (
         <CandleStickChart />
       ) : (
@@ -25,8 +27,15 @@ const Trading = () => {
           }}
           onResize={handleResize}
         >
-          <Splitter.Panel collapsible min="30%" size={sizes[0]}>
-            <CandleStickChart sizes={sizes} />
+          <Splitter.Panel min="30%" size={sizes[0]}>
+            <Splitter layout="vertical">
+              <Splitter.Panel min={"0%"} size={"95%"}>
+                <CandleStickChart sizes={sizes} />
+              </Splitter.Panel>
+              <Splitter.Panel min={"0%"} size={"10%"}>
+                <div>Footer trading</div>
+              </Splitter.Panel>
+            </Splitter>
           </Splitter.Panel>
 
           <Splitter.Panel size={sizes[1]}>
@@ -34,7 +43,7 @@ const Trading = () => {
               <Splitter.Panel min={"0%"} size={"40%"}>
                 <SideBarChart />
               </Splitter.Panel>
-              <Splitter.Panel min={"0%"}>
+              <Splitter.Panel min={"10%"}>
                 <InformationDetail />
               </Splitter.Panel>
             </Splitter>

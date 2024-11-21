@@ -3,7 +3,7 @@ import BlogSwiper from "@/components/pages/home/BlogSwiper";
 
 const Home = () => {
   return (
-    <div className="min-h-[100vh]">
+    <div className="max-w-[1440px] min-h-[100vh] pl-[20px]">
       <MarketSummary />
       <BlogSwiper />
       <BlogSwiper />
