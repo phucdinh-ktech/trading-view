@@ -8,10 +8,13 @@ import {
 } from "lightweight-charts";
 import { MouseEvent, useEffect, useMemo, useRef, useState } from "react";
 
+import icons from "@/assets/icons";
+import WrapperRangTime from "@/components/common/RangTime/WrapperRangTime";
 import WrapperSetting from "@/components/common/Setting/WrapperSetting";
 
 import useWindowSize from "../../../hooks/useWindowSize";
-import WrapperRangTime from "@/components/common/RangTime/WrapperRangTime";
+import svgs from "@/assets/svgs";
+import InfoMoveChart from "@/components/common/Charts/InfoMoveChart";
 
 function generateCandlestickData(
   days: number,
@@ -128,11 +131,11 @@ const CandleStickChart = (props: ICandlestickChartProps) => {
   };
 
   const candlestickData = useMemo(() => {
-    return generateCandlestickData(30, 1698278400);
+    return generateCandlestickData(120, 1698278400);
   }, []);
 
   const histogramData = useMemo(() => {
-    return generateHistogramData(30, 1698278400);
+    return generateHistogramData(120, 1698278400);
   }, []);
   useEffect(() => {
     if (chartContainerRef?.current) {
@@ -235,6 +238,7 @@ const CandleStickChart = (props: ICandlestickChartProps) => {
           getPopupContainer={() => chartContainerRef.current || document.body}
           rootClassName="hidden md:block"
         />
+        <InfoMoveChart />
       </div>
       <WrapperRangTime chart="candlestick" />
     </div>

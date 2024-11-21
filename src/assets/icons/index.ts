@@ -1,5 +1,6 @@
 import addCircle from "./add-circle.svg";
 import app from "./app.svg";
+import apple from "./apple.svg";
 import arrowDown from "./arrow-down.svg";
 import arrowUp from "./arrow-up.svg";
 import arrowRightWhite from "./arrowRightWhite.svg";
@@ -9,11 +10,14 @@ import candle from "./candle.svg";
 import check from "./check.svg";
 import chervonUp from "./chervonUp.svg";
 import chevronRight from "./chevron-right.svg";
+import d from "./d.svg";
 import edit from "./edit.svg";
+import extend from "./extend.svg";
 import fx from "./fx.svg";
 import global from "./globe.svg";
 import grid from "./grid.svg";
 import menu from "./menu.svg";
+import minus from "./minus.svg";
 import more from "./more-horizontal.svg";
 import percent from "./percent.svg";
 import chart from "./pie-chart.svg";
@@ -27,6 +31,7 @@ import square from "./square.svg";
 import undo from "./undo.svg";
 import user from "./user.svg";
 import close from "./x.svg";
+import moreHoz from "./more-hoz.svg";
 const icons = {
   edit,
   grid,
@@ -57,5 +62,10 @@ const icons = {
   camera,
   calender,
   percent,
+  apple,
+  minus,
+  d,
+  extend,
+  moreHoz,
 };
 export default icons;
