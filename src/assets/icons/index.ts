@@ -3,6 +3,7 @@ import app from "./app.svg";
 import arrowDown from "./arrow-down.svg";
 import arrowUp from "./arrow-up.svg";
 import arrowRightWhite from "./arrowRightWhite.svg";
+import calender from "./calender.svg";
 import camera from "./camera.svg";
 import candle from "./candle.svg";
 import check from "./check.svg";
@@ -14,6 +15,7 @@ import global from "./globe.svg";
 import grid from "./grid.svg";
 import menu from "./menu.svg";
 import more from "./more-horizontal.svg";
+import percent from "./percent.svg";
 import chart from "./pie-chart.svg";
 import plus from "./plus.svg";
 import redo from "./redo.svg";
@@ -53,5 +55,7 @@ const icons = {
   searchTool,
   screenFull,
   camera,
+  calender,
+  percent,
 };
 export default icons;

@@ -6,11 +6,12 @@ import {
   MouseEventParams,
   UTCTimestamp,
 } from "lightweight-charts";
-import { MouseEvent, useEffect, useRef, useState } from "react";
+import { MouseEvent, useEffect, useMemo, useRef, useState } from "react";
 
 import WrapperSetting from "@/components/common/Setting/WrapperSetting";
 
 import useWindowSize from "../../../hooks/useWindowSize";
+import WrapperRangTime from "@/components/common/RangTime/WrapperRangTime";
 
 function generateCandlestickData(
   days: number,
@@ -126,6 +127,13 @@ const CandleStickChart = (props: ICandlestickChartProps) => {
     setOpenMenu(false);
   };
 
+  const candlestickData = useMemo(() => {
+    return generateCandlestickData(30, 1698278400);
+  }, []);
+
+  const histogramData = useMemo(() => {
+    return generateHistogramData(30, 1698278400);
+  }, []);
   useEffect(() => {
     if (chartContainerRef?.current) {
       const chart = createChart(chartContainerRef.current, {
@@ -168,7 +176,7 @@ const CandleStickChart = (props: ICandlestickChartProps) => {
         wickUpColor: "#26a69a",
         wickDownColor: "#ef5350",
       });
-      candlestickSeries.setData(generateCandlestickData(30, 1698278400));
+      candlestickSeries.setData(candlestickData);
 
       // Histogram
       const historyChartSeries = chart.addHistogramSeries({
@@ -176,7 +184,7 @@ const CandleStickChart = (props: ICandlestickChartProps) => {
         lastValueVisible: false,
       });
 
-      historyChartSeries.setData(generateHistogramData(30, 1698278400));
+      historyChartSeries.setData(histogramData);
 
       // config scale
       chart.timeScale().fitContent();
@@ -203,28 +211,32 @@ const CandleStickChart = (props: ICandlestickChartProps) => {
   }, [width, sizes]);
 
   return (
-    <div
-      className="w-full relative h-[calc(100vh-120px)] md:h-full py-[10px] flex items-center justify-center"
-      onClick={handleLeftClick}
-      ref={chartContainerRef}
-      onContextMenu={handleRightClick}
-    >
-      <Popover
-        ref={popoverRef}
-        open={openMenu}
-        trigger="click"
-        content={<WrapperSetting price={price} />}
-        arrow={false}
-        overlayStyle={{
-          left: `${newPosition.left}px`,
-          top: "50%",
-          transform: "translateY(-50%)",
-        }}
-        align={{
-          overflow: { adjustX: true, adjustY: true },
-        }}
-        getPopupContainer={() => chartContainerRef.current || document.body}
-      />
+    <div className="w-full h-full">
+      <div
+        className="w-full relative pt-[10px] h-[calc(100vh-120px-22px)] md:h-[calc(100vh-120px-55px)] flex items-center justify-center"
+        onClick={handleLeftClick}
+        ref={chartContainerRef}
+        onContextMenu={handleRightClick}
+      >
+        <Popover
+          ref={popoverRef}
+          open={openMenu}
+          trigger="click"
+          content={<WrapperSetting price={price} />}
+          arrow={false}
+          overlayStyle={{
+            left: `${newPosition.left}px`,
+            top: "50%",
+            transform: "translateY(-50%)",
+          }}
+          align={{
+            overflow: { adjustX: true, adjustY: true },
+          }}
+          getPopupContainer={() => chartContainerRef.current || document.body}
+          rootClassName="hidden md:block"
+        />
+      </div>
+      <WrapperRangTime chart="candlestick" />
     </div>
   );
 };

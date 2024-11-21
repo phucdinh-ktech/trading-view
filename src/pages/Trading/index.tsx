@@ -18,11 +18,14 @@ const Trading = () => {
     <>
       <ChartHeader />
       {size?.width < 768 ? (
-        <CandleStickChart />
+        <>
+          <div className="w-full h-[2px] bg-[#0505050f]"></div>
+          <CandleStickChart />
+        </>
       ) : (
         <Splitter
           style={{
-            height: "calc(100vh - 120px)",
+            height: "calc(100vh - 100px)",
             boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)",
           }}
           onResize={handleResize}
@@ -32,7 +35,7 @@ const Trading = () => {
               <Splitter.Panel min={"0%"} size={"95%"}>
                 <CandleStickChart sizes={sizes} />
               </Splitter.Panel>
-              <Splitter.Panel min={"0%"} size={"10%"}>
+              <Splitter.Panel min={"0%"} size={"5%"}>
                 <div>Footer trading</div>
               </Splitter.Panel>
             </Splitter>

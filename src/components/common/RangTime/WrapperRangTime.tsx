@@ -1,52 +1,100 @@
+import { Divider } from "antd";
 import { useState } from "react";
 
+import icons from "@/assets/icons";
 import RangTimeItem from "@/components/common/RangTime/RangTimeItem";
+export type ChartType = "candlestick" | undefined;
 
-const WrapperRangTime = () => {
+interface IWrapperRangeTimeProps {
+  chart: ChartType;
+}
+const WrapperRangTime = (props: IWrapperRangeTimeProps) => {
+  const { chart } = props;
   const [selectedKey, setSelectedKey] = useState<string>();
 
   const handleChangeKey = (time: string) => {
     setSelectedKey(time);
   };
 
+  const rangData =
+    chart === "candlestick"
+      ? ["5y", "1y", "6m", "3m", "1m", "5d", "1d"]
+      : ["1D", "1M", "3M", "1Y", "3Y", "ALL"];
+
+  if (chart === "candlestick")
+    return (
+      <div className="flex justify-between items-center p-[4px_16px] border-t border-solid border-[#0505050f] h-[38.2px]">
+        <div className="hidden md:flex justify-start">
+          <div className="flex justify-start gap-[4px]">
+            {rangData.map((rang, index) => (
+              <RangTimeItem
+                key={index}
+                time={rang}
+                onChange={handleChangeKey}
+                active={selectedKey === rang}
+                chart={chart}
+              />
+            ))}
+          </div>
+          <div className="p-[8px_4px]">
+            <Divider className="h-full" type="vertical" />
+          </div>
+          <div className="flex justify-center items-center">
+            <div className="size-[28px]">
+              <img src={icons.calender} className="w-full h-full" />
+            </div>
+          </div>
+        </div>
+        <div className="flex gap-[6px] md:hidden">
+          <span className="text-[14px] text-blackApp leading-[24px] font-medium">
+            Date range
+          </span>
+          <div className="flex justify-center items-center">
+            <div className="w-[20px] h-[28px] p-[4px]">
+              <img src={icons.chervonUp} className="w-full h-full" />
+            </div>
+          </div>
+        </div>
+        <div className="flex justify-end">
+          <div className="flex justify-start items-center gap-[6px]">
+            <span className="text-[14px] text-blackApp leading-[24px] font-medium">
+              04:14:15 (UTC)
+            </span>
+            <span className="hidden md:inline-block px-[6px] text-[14px] text-blackApp leading-[24px] font-medium">
+              RTH
+            </span>
+          </div>
+          <div className="p-[8px_4px]">
+            <Divider className="h-full" type="vertical" />
+          </div>
+
+          <div className="flex items-center justify-end gap-[12px]">
+            <div className="flex justify-center items-center">
+              <div className="size-[14px]">
+                <img src={icons.percent} className="w-full h-full" />
+              </div>
+            </div>
+            <span className="text-[14px] text-blackApp leading-[24px] font-medium">
+              log
+            </span>
+            <span className="text-[14px] text-[#2962ff] leading-[24px] font-medium">
+              auto
+            </span>
+          </div>
+        </div>
+      </div>
+    );
   return (
     <div className="flex justify-start gap-[4px] mt-[12px]">
-      <RangTimeItem
-        key="1D"
-        time="1D"
-        onChange={handleChangeKey}
-        active={selectedKey === "1D"}
-      />
-      <RangTimeItem
-        key="1M"
-        time="1M"
-        onChange={handleChangeKey}
-        active={selectedKey === "1M"}
-      />
-      <RangTimeItem
-        key="3M"
-        time="3M"
-        onChange={handleChangeKey}
-        active={selectedKey === "3M"}
-      />
-      <RangTimeItem
-        key="1Y"
-        time="1Y"
-        onChange={handleChangeKey}
-        active={selectedKey === "1Y"}
-      />
-      <RangTimeItem
-        key="3Y"
-        time="3Y"
-        onChange={handleChangeKey}
-        active={selectedKey === "3Y"}
-      />
-      <RangTimeItem
-        key="ALL"
-        time="ALL"
-        onChange={handleChangeKey}
-        active={selectedKey === "ALL"}
-      />
+      {rangData.map((rang, index) => (
+        <RangTimeItem
+          key={index}
+          time={rang}
+          onChange={handleChangeKey}
+          active={selectedKey === rang}
+          chart={chart}
+        />
+      ))}
     </div>
   );
 };
