@@ -133,7 +133,7 @@ const InfoMoveChart = (props: IInfoMoveChartProps) => {
         <span
           className={clsx(
             "text-[13px] text-blackApp pr-[2px]",
-            toggleVolume ? "flex " : "hidden"
+            !toggleVolume ? "flex " : "hidden"
           )}
         >
           1
