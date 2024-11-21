@@ -7,6 +7,8 @@ export default {
         blackApp: "#131722",
         active: "#f0f3fa",
         redApp: "#f23645",
+        hoverApp: "#f0f3fa",
+        blueApp: "#2962ff",
       },
     },
   },
