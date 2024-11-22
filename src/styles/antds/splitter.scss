@@ -1,0 +1,9 @@
+.ant-splitter.ant-splitter-vertical.chart {
+  .ant-splitter-bar {
+    .ant-splitter-bar-dragger {
+      &::after {
+        display: none;
+      }
+    }
+  }
+}
