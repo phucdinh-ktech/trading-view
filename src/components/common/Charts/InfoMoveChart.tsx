@@ -16,13 +16,13 @@ const InfoMoveChart = (props: IInfoMoveChartProps) => {
     ((Number(candlestick?.close) - Number(candlestick?.open)) * 100) /
     Number(candlestick?.close);
   return (
-    <div className="absolute top-[5px] left-[5px] min-w-[300px] h-[100px] z-40 flex flex-col gap-[4px]">
-      <div className="flex gap-[12px]">
+    <div className="absolute top-[5px] left-[5px] min-w-[200px] md:min-w-[300px] h-fit z-10 flex flex-col gap-[4px] px-[6px]">
+      <div className="flex-col md:flex gap-[24px] md:gap-[12px]">
         <div
-          className="w-fit group/title flex items-center hover:outline hover:outline-1 hover:outline-blueApp hover:rounded-[4px]"
+          className="w-fit group/title flex items-center md:hover:outline md:hover:outline-1 md:hover:outline-blueApp md:hover:rounded-[4px]"
           onClick={e => e.stopPropagation()}
         >
-          <div className="flex items-center gap-[4px] px-[3px] rounded-[2px] cursor-pointer hover:bg-hoverApp">
+          <div className="flex items-center gap-[4px] rounded-[2px] cursor-pointer hover:bg-hoverApp">
             <div className="size-[18px]">
               <img src={icons.apple} className="w-full h-full rounded-full" />
             </div>
@@ -36,15 +36,32 @@ const InfoMoveChart = (props: IInfoMoveChartProps) => {
           <p className="text-[16px] text-blackApp px-[3px] font-medium before:content-['\2022'] before:inline-block before:mx-[4px]">
             Cboe One
           </p>
-          <div className="hidden group-hover/title:flex items-center px-[3px]">
+          <div className="hidden md:group-hover/title:flex items-center px-[3px]">
             <div className="w-[16px] h-[4px]">
               <img src={icons.moreHoz} className="w-full h-full" />
+            </div>
+          </div>
+          {/* <div className="flex justify-center items-center">
+            <img src={icons.dot} className="w-full h-ful" />
+          </div> */}
+          <div
+            className="w-fit flex md:hidden items-center ml-[4px] gap-0 rounded-[10%] overflow-hidden"
+            onClick={e => e.stopPropagation()}
+          >
+            <div className="w-[20px] h-[18px] bg-[rgba(149,152,161,0.3)] pl-[2px]">
+              <img src={icons.minus} className="w-full h-full" />
+            </div>
+            <div className="w-[20px] h-[18px] bg-[rgba(245,124,0,0.3)]">
+              <img src={icons.d} className="w-full h-full" />
+            </div>
+            <div className="w-[20px] h-[18px] bg-[rgba(0,188,210,0.3)] pr-[2px]">
+              <img src={icons.extend} className="w-full h-full" />
             </div>
           </div>
         </div>
 
         <div
-          className="w-fit flex items-center gap-0 rounded-[40%] overflow-hidden"
+          className="w-fit hidden md:flex items-center gap-0 rounded-[40%] overflow-hidden"
           onClick={e => e.stopPropagation()}
         >
           <div className="w-[20px] h-[18px] bg-[rgba(149,152,161,0.3)] pl-[2px]">
@@ -98,7 +115,7 @@ const InfoMoveChart = (props: IInfoMoveChartProps) => {
       </div>
       <div
         className={clsx(
-          "w-fit px-[4px] transition-all delay-500",
+          "w-fit transition-all delay-500",
           toggleVolume ? "flex " : "hidden"
         )}
         onClick={e => e.stopPropagation()}
@@ -115,7 +132,7 @@ const InfoMoveChart = (props: IInfoMoveChartProps) => {
         </p>
       </div>
       <div
-        className="w-fit flex items-center rounded-[2px] mx-[4px] bg-white outline-1 outline outline-[#0505050f] cursor-pointer"
+        className="w-fit flex items-center rounded-[2px] bg-white outline-1 outline outline-[#0505050f] cursor-pointer"
         onClick={e => e.stopPropagation()}
       >
         <div
@@ -133,7 +150,7 @@ const InfoMoveChart = (props: IInfoMoveChartProps) => {
         <span
           className={clsx(
             "text-[13px] text-blackApp pr-[2px]",
-            !toggleVolume ? "flex " : "hidden"
+            !toggleVolume ? "flex" : "hidden"
           )}
         >
           1

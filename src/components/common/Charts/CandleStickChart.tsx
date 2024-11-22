@@ -77,8 +77,8 @@ const CandleStickChart = (props: ICandlestickChartProps) => {
   const [openMenu, setOpenMenu] = useState<boolean>(false);
   const popoverRef = useRef<TooltipRef | null>(null);
   const [chartMoveData, setChartMoveData] = useState<{
-    candlestick: CandlestickData;
-    histogram: HistogramData;
+    candlestick?: CandlestickData;
+    histogram?: HistogramData;
   }>();
   const [newPosition, setNewPosition] = useState({
     left: 0,
@@ -136,11 +136,29 @@ const CandleStickChart = (props: ICandlestickChartProps) => {
   };
 
   const candlestickData = useMemo(() => {
-    return generateCandlestickData(120, 1698278400);
+    const data = generateCandlestickData(120, 1698278400);
+
+    const latestData = data[data?.length - 1];
+    if (latestData) {
+      setChartMoveData(prev => ({
+        ...prev,
+        candlestick: latestData,
+      }));
+    }
+
+    return data;
   }, []);
 
   const histogramData = useMemo(() => {
-    return generateHistogramData(120, 1698278400);
+    const data = generateHistogramData(120, 1698278400);
+    const latestData = data[data?.length - 1];
+    if (latestData) {
+      setChartMoveData(prev => ({
+        ...prev,
+        histogram: latestData,
+      }));
+    }
+    return data;
   }, []);
   useEffect(() => {
     if (chartContainerRef?.current) {

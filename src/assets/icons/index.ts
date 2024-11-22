@@ -11,6 +11,7 @@ import check from "./check.svg";
 import chervonUp from "./chervonUp.svg";
 import chevronRight from "./chevron-right.svg";
 import d from "./d.svg";
+import dot from "./dot.svg";
 import edit from "./edit.svg";
 import extend from "./extend.svg";
 import fx from "./fx.svg";
@@ -19,6 +20,7 @@ import grid from "./grid.svg";
 import menu from "./menu.svg";
 import minus from "./minus.svg";
 import more from "./more-horizontal.svg";
+import moreHoz from "./more-hoz.svg";
 import percent from "./percent.svg";
 import chart from "./pie-chart.svg";
 import plus from "./plus.svg";
@@ -31,7 +33,6 @@ import square from "./square.svg";
 import undo from "./undo.svg";
 import user from "./user.svg";
 import close from "./x.svg";
-import moreHoz from "./more-hoz.svg";
 const icons = {
   edit,
   grid,
@@ -67,5 +68,6 @@ const icons = {
   d,
   extend,
   moreHoz,
+  dot,
 };
 export default icons;
