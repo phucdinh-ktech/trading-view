@@ -3,6 +3,7 @@ import { CandlestickData, HistogramData } from "lightweight-charts";
 import { useState } from "react";
 
 import icons from "@/assets/icons";
+import formatPrice from "@/utils/formatPrice";
 
 interface IInfoMoveChartProps {
   candlestick?: CandlestickData;
@@ -17,7 +18,7 @@ const InfoMoveChart = (props: IInfoMoveChartProps) => {
     Number(candlestick?.close);
   return (
     <div className="absolute top-[5px] left-[5px] min-w-[200px] md:min-w-[300px] h-fit z-10 flex flex-col gap-[4px] px-[6px]">
-      <div className="flex-col md:flex gap-[24px] md:gap-[12px]">
+      <div className="flex flex-col md:flex-row gap-[4px] md:gap-[12px]">
         <div
           className="w-fit group/title flex items-center md:hover:outline md:hover:outline-1 md:hover:outline-blueApp md:hover:rounded-[4px]"
           onClick={e => e.stopPropagation()}
@@ -45,7 +46,7 @@ const InfoMoveChart = (props: IInfoMoveChartProps) => {
             <img src={icons.dot} className="w-full h-ful" />
           </div> */}
           <div
-            className="w-fit flex md:hidden items-center ml-[4px] gap-0 rounded-[10%] overflow-hidden"
+            className="w-fit flex md:hidden items-center ml-[4px] gap-0 rounded-[24px] overflow-hidden"
             onClick={e => e.stopPropagation()}
           >
             <div className="w-[20px] h-[18px] bg-[rgba(149,152,161,0.3)] pl-[2px]">
@@ -61,7 +62,7 @@ const InfoMoveChart = (props: IInfoMoveChartProps) => {
         </div>
 
         <div
-          className="w-fit hidden md:flex items-center gap-0 rounded-[40%] overflow-hidden"
+          className="w-fit hidden md:flex items-center gap-0 rounded-[24px] overflow-hidden"
           onClick={e => e.stopPropagation()}
         >
           <div className="w-[20px] h-[18px] bg-[rgba(149,152,161,0.3)] pl-[2px]">
@@ -82,25 +83,25 @@ const InfoMoveChart = (props: IInfoMoveChartProps) => {
           <span className="flex gap-[2px] text-[13px] font-normal text-black">
             O
             <span className={diff > 0 ? "text-[#089981]" : " text-[#ef5350]"}>
-              {candlestick?.open.toFixed(2)}
+              {formatPrice(Number(candlestick?.open))}
             </span>
           </span>
           <span className="flex gap-[2px] text-[13px] font-normal text-black">
             H
             <span className={diff > 0 ? "text-[#089981]" : " text-[#ef5350]"}>
-              {candlestick?.high.toFixed(2)}
+              {formatPrice(Number(candlestick?.high))}
             </span>
           </span>
           <span className="flex gap-[2px] text-[13px] font-normal text-black">
             L
             <span className={diff > 0 ? "text-[#089981]" : " text-[#ef5350]"}>
-              {candlestick?.low.toFixed(2)}
+              {formatPrice(Number(candlestick?.low))}
             </span>
           </span>
           <span className="flex gap-[2px] text-[13px] font-normal text-black">
             C
             <span className={diff > 0 ? "text-[#089981]" : " text-[#ef5350]"}>
-              {candlestick?.close.toFixed(2)}
+              {formatPrice(Number(candlestick?.close))}
             </span>
           </span>
           <span
@@ -109,7 +110,7 @@ const InfoMoveChart = (props: IInfoMoveChartProps) => {
               diff > 0 ? "text-[#089981]" : " text-[#ef5350]"
             )}
           >
-            {diff.toFixed(2)} ({percent.toFixed(2)}%)
+            {formatPrice(Number(diff))} ({percent.toFixed(2)}%)
           </span>
         </div>
       </div>
@@ -127,7 +128,7 @@ const InfoMoveChart = (props: IInfoMoveChartProps) => {
               color: histogram?.color === "#90d5c9" ? "#089981" : "#ef5350",
             }}
           >
-            {histogram?.value.toFixed(2)}
+            {formatPrice(Number(histogram?.value))}
           </span>
         </p>
       </div>

@@ -13,6 +13,7 @@ import { MouseEvent, useEffect, useMemo, useRef, useState } from "react";
 import InfoMoveChart from "@/components/common/Charts/InfoMoveChart";
 import WrapperRangTime from "@/components/common/RangTime/WrapperRangTime";
 import WrapperSetting from "@/components/common/Setting/WrapperSetting";
+import formatPrice from "@/utils/formatPrice";
 
 import useWindowSize from "../../../hooks/useWindowSize";
 
@@ -137,7 +138,7 @@ const CandleStickChart = (props: ICandlestickChartProps) => {
 
   const candlestickData = useMemo(() => {
     const data = generateCandlestickData(120, 1698278400);
-
+    console.log("candlestickData", data);
     const latestData = data[data?.length - 1];
     if (latestData) {
       setChartMoveData(prev => ({
@@ -241,6 +242,12 @@ const CandleStickChart = (props: ICandlestickChartProps) => {
           candlestick: candlestickData,
           histogram: histogramData,
         });
+      });
+
+      chart.applyOptions({
+        localization: {
+          priceFormatter: formatPrice,
+        },
       });
     }
     return () => {
