@@ -12,6 +12,7 @@ import chervonUp from "./chervonUp.svg";
 import chevronRight from "./chevron-right.svg";
 import clock from "./clock.svg";
 import d from "./d.svg";
+import dot from "./dot.svg";
 import edit from "./edit.svg";
 import extend from "./extend.svg";
 import fx from "./fx.svg";
@@ -77,5 +78,6 @@ const icons = {
   d,
   extend,
   moreHoz,
+  dot,
 };
 export default icons;
