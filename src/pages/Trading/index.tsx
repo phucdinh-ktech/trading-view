@@ -30,6 +30,7 @@ const Trading = () => {
             style={{
               height: "calc(100vh - 100px)",
               boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)",
+              width: "calc(100vw - 55px)",
             }}
             onResize={handleResize}
           >
