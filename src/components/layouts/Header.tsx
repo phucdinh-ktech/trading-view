@@ -9,7 +9,7 @@ import { paths } from "@/constants/paths";
 function Header() {
   const navigate = useNavigate();
   return (
-    <div className="h-[60px] shadow-md border-b bg-white flex items-center justify-between px-[10px] fixed top-0 w-full z-[51]">
+    <div className="h-[60px] shadow-sm border-b bg-white flex items-center justify-between px-[10px] fixed top-0 w-full z-[51]">
       <div className="flex items-center gap-[10px]">
         <button
           className="p-[10px] rounded-full hover:bg-[#F0F3FA] duration-300 items-center gap-[10px] lg:hidden flex"
