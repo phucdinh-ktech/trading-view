@@ -4,6 +4,7 @@ import { useState } from "react";
 import CandleStickChart from "@/components/common/Charts/CandleStickChart";
 import ChartHeader from "@/components/common/Charts/ChartHeader";
 import InformationDetail from "@/components/common/InfomationDetail";
+import RightSideBar from "@/components/common/RightSideBar";
 import SideBarChart from "@/components/common/SideBarChart";
 import useWindowSize from "@/utils/hooks/useWindowSize";
 
@@ -24,35 +25,38 @@ const Trading = () => {
           <CandleStickChart />
         </>
       ) : (
-        <Splitter
-          style={{
-            height: "calc(100vh - 100px)",
-            boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)",
-          }}
-          onResize={handleResize}
-        >
-          <Splitter.Panel min="30%" size={sizes[0]}>
-            <Splitter layout="vertical">
-              <Splitter.Panel min={"0%"} size={"95%"}>
-                <CandleStickChart sizes={sizes} />
-              </Splitter.Panel>
-              <Splitter.Panel min={"0%"} size={"5%"}>
-                <div>Footer trading</div>
-              </Splitter.Panel>
-            </Splitter>
-          </Splitter.Panel>
+        <div className="flex gap-[2px]">
+          <Splitter
+            style={{
+              height: "calc(100vh - 100px)",
+              boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)",
+            }}
+            onResize={handleResize}
+          >
+            <Splitter.Panel min="30%" size={sizes[0]}>
+              <Splitter layout="vertical">
+                <Splitter.Panel min={"0%"} size={"95%"}>
+                  <CandleStickChart sizes={sizes} />
+                </Splitter.Panel>
+                <Splitter.Panel min={"0%"} size={"5%"}>
+                  <div>Footer trading</div>
+                </Splitter.Panel>
+              </Splitter>
+            </Splitter.Panel>
 
-          <Splitter.Panel size={sizes[1]}>
-            <Splitter layout="vertical">
-              <Splitter.Panel min={"0%"} size={"40%"}>
-                <SideBarChart />
-              </Splitter.Panel>
-              <Splitter.Panel min={"10%"}>
-                <InformationDetail />
-              </Splitter.Panel>
-            </Splitter>
-          </Splitter.Panel>
-        </Splitter>
+            <Splitter.Panel size={sizes[1]}>
+              <Splitter layout="vertical">
+                <Splitter.Panel min={"0%"} size={"40%"}>
+                  <SideBarChart />
+                </Splitter.Panel>
+                <Splitter.Panel min={"10%"}>
+                  <InformationDetail />
+                </Splitter.Panel>
+              </Splitter>
+            </Splitter.Panel>
+          </Splitter>
+          <RightSideBar />
+        </div>
       )}
     </>
   );

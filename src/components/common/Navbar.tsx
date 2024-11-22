@@ -12,7 +12,7 @@ function NavBar() {
             <span className="text-[14px] font-medium">{nav?.title}</span>
           </button>
 
-          <div className="hidden group-hover:block absolute top-full left-0 w-[250px] mt-[10px] rounded-[10px] shadow-md border bg-white z-10 before:content-[''] before:absolute before:-top-[10px] before:left-0 before:w-full before:h-[10px]">
+          <div className="hidden group-hover:block absolute top-full left-0 w-[250px] mt-[10px] rounded-[10px] shadow-md border bg-white z-[51] before:content-[''] before:absolute before:-top-[10px] before:left-0 before:w-full before:h-[10px]">
             {nav?.children?.map((child, childIndex) => (
               <div key={childIndex} className="rounded-[5px]">
                 {child?.header !== "" && (
