@@ -6,6 +6,7 @@ import chart5 from "./chart5.webp";
 import chart6 from "./chart6.webp";
 import chart7 from "./chart7.webp";
 import logo from "./k-tech.jpg";
+import banner from "./banner.jpg";
 const images = {
   logo,
   chart1,
@@ -15,5 +16,6 @@ const images = {
   chart5,
   chart6,
   chart7,
+  banner,
 };
 export default images;

@@ -16,6 +16,7 @@ import WrapperSetting from "@/components/common/Setting/WrapperSetting";
 import formatPrice from "@/utils/formatPrice";
 
 import useWindowSize from "../../../hooks/useWindowSize";
+import clsx from "clsx";
 
 function generateCandlestickData(
   days: number,
@@ -68,9 +69,10 @@ function generateHistogramData(
 
 interface ICandlestickChartProps {
   sizes?: (number | string)[];
+  footerSize?: number;
 }
 const CandleStickChart = (props: ICandlestickChartProps) => {
-  const { sizes } = props;
+  const { sizes, footerSize } = props;
   const { width } = useWindowSize();
   const chartContainerRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<IChartApi | null>(null);
@@ -165,7 +167,7 @@ const CandleStickChart = (props: ICandlestickChartProps) => {
     if (chartContainerRef?.current) {
       const chart = createChart(chartContainerRef.current, {
         width: chartContainerRef.current.clientWidth - 20 || 0,
-        height: chartContainerRef.current.clientHeight - 20 || 0,
+        height: Math.max(chartContainerRef.current.clientHeight - 20, 0) || 0,
         layout: { textColor: "#131722" },
         grid: {
           vertLines: {
@@ -257,12 +259,20 @@ const CandleStickChart = (props: ICandlestickChartProps) => {
         chartRef.current = null;
       }
     };
-  }, [width, sizes]);
+  }, [width, sizes, footerSize]);
 
+  const heightCalc: Record<number, string> = {
+    7: "md:h-[calc(100vh-120px-65px)]",
+    50: "md:h-[calc(50vh-90px)]",
+    100: "md:h-0",
+  };
   return (
     <div className="w-full h-full">
       <div
-        className="w-full relative pt-[10px] h-[calc(100vh-120px-22px)] md:h-[calc(100vh-120px-55px)] flex items-center justify-center"
+        className={clsx(
+          "w-full relative pt-[10px] h-[calc(100vh-120px-22px)] flex items-center justify-center",
+          heightCalc[footerSize || 7]
+        )}
         onClick={handleLeftClick}
         ref={chartContainerRef}
         onContextMenu={handleRightClick}
