@@ -13,7 +13,7 @@ import useWindowSize from "../../hooks/useWindowSize";
 const Trading = () => {
   const { width } = useWindowSize();
   const [sizes, setSizes] = useState<(number | string)[]>(["70%", "30%"]);
-  const [footerSize, setFooterSize] = useState<number>(50);
+  const [footerSize, setFooterSize] = useState<number>(7);
   const size = useWindowSize();
 
   const handleResize = (newSizes: (number | string)[]) => {
@@ -63,6 +63,7 @@ const Trading = () => {
                 >
                   <ChartFooter
                     handleChangeFooterSize={handleChangeFooterSize}
+                    footerSize={footerSize}
                   />
                 </Splitter.Panel>
               </Splitter>

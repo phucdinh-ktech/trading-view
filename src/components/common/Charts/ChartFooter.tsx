@@ -36,9 +36,10 @@ const items: TabsProps["items"] = [
 
 interface IChartFooterProps {
   handleChangeFooterSize?: (size: number) => void;
+  footerSize?: number;
 }
 const ChartFooter = (props: IChartFooterProps) => {
-  const { handleChangeFooterSize } = props;
+  const { handleChangeFooterSize, footerSize } = props;
   const { width } = useWindowSize();
   const [toggleFooter, setToggleFooter] = useState<boolean>(false);
   const [selectedKey, setSelectedKey] = useState<string>("1");
@@ -87,9 +88,14 @@ const ChartFooter = (props: IChartFooterProps) => {
           )}
           <div
             className="w-[38px] h-full p-[5px] cursor-pointer"
-            onClick={() => handleChangeFooterSize?.(100)}
+            onClick={() =>
+              handleChangeFooterSize?.(footerSize === 100 ? 7 : 100)
+            }
           >
-            <img src={icons.zoom} className="w-full h-full" />
+            <img
+              src={footerSize === 100 ? icons.zoomOut : icons.zoom}
+              className="w-full h-full"
+            />
           </div>
         </div>
       </div>

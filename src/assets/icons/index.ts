@@ -46,6 +46,7 @@ import undo from "./undo.svg";
 import us from "./US.svg";
 import user from "./user.svg";
 import close from "./x.svg";
+import zoomOut from "./zoom-out.svg";
 import zoom from "./zoom.svg";
 const icons = {
   clock,
@@ -97,5 +98,6 @@ const icons = {
   download,
   us,
   toggle,
+  zoomOut,
 };
 export default icons;
