@@ -7,8 +7,7 @@ import ChartHeader from "@/components/common/Charts/ChartHeader";
 import InformationDetail from "@/components/common/InfomationDetail";
 import RightSideBar from "@/components/common/RightSideBar";
 import SideBarChart from "@/components/common/SideBarChart";
-
-import useWindowSize from "../../hooks/useWindowSize";
+import useWindowSize from "@/utils/hooks/useWindowSize";
 
 const Trading = () => {
   const { width } = useWindowSize();

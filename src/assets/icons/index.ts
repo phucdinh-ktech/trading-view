@@ -11,6 +11,8 @@ import candle from "./candle.svg";
 import check from "./check.svg";
 import chervonUp from "./chervonUp.svg";
 import chevronRight from "./chevron-right.svg";
+import chevronsDown from "./chevrons-down.svg";
+import chevronsUp from "./chevrons-up.svg";
 import clock from "./clock.svg";
 import column from "./column.svg";
 import d from "./d.svg";
@@ -40,6 +42,7 @@ import screenFull from "./screenFull.svg";
 import search from "./search.svg";
 import searchTool from "./searchTool.svg";
 import setting from "./setting.svg";
+import slider from "./sliders.svg";
 import square from "./square.svg";
 import toggle from "./toggle.svg";
 import undo from "./undo.svg";
@@ -49,6 +52,9 @@ import close from "./x.svg";
 import zoomOut from "./zoom-out.svg";
 import zoom from "./zoom.svg";
 const icons = {
+  chevronsUp,
+  chevronsDown,
+  slider,
   clock,
   layer,
   light,
