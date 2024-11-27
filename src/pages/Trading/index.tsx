@@ -1,4 +1,5 @@
 import { Splitter } from "antd";
+import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 
 import CandleStickChart from "@/components/common/Charts/CandleStickChart";

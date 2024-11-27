@@ -128,7 +128,7 @@ const InfoMoveChart = (props: IInfoMoveChartProps) => {
               color: histogram?.color === "#90d5c9" ? "#089981" : "#ef5350",
             }}
           >
-            {formatPrice(Number(histogram?.value))}
+            {formatPrice(Number(histogram?.value || 0))}
           </span>
         </p>
       </div>

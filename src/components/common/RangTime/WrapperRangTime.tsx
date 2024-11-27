@@ -1,25 +1,38 @@
 import { Divider } from "antd";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import icons from "@/assets/icons";
 import RangTimeItem from "@/components/common/RangTime/RangTimeItem";
+import generateDays from "@/utils/functions/generateDays";
 export type ChartType = "candlestick" | undefined;
 
 interface IWrapperRangeTimeProps {
   chart: ChartType;
+  handleChangeLimitDay: (day: number) => void;
 }
 const WrapperRangTime = (props: IWrapperRangeTimeProps) => {
-  const { chart } = props;
-  const [selectedKey, setSelectedKey] = useState<string>();
+  const { chart, handleChangeLimitDay } = props;
+  const [selectedKey, setSelectedKey] = useState<string>(
+    chart === "candlestick" ? "1d" : "1D"
+  );
 
   const handleChangeKey = (time: string) => {
     setSelectedKey(time);
+    const limitDay = generateDays(time);
+    handleChangeLimitDay(limitDay);
   };
 
   const rangData =
     chart === "candlestick"
       ? ["5y", "1y", "6m", "3m", "1m", "5d", "1d"]
       : ["1D", "1M", "3M", "1Y", "3Y", "ALL"];
+
+  useEffect(() => {
+    if (["1d", "1D"].includes(selectedKey)) {
+      const limitDay = generateDays("1d");
+      handleChangeLimitDay(limitDay);
+    }
+  }, []);
 
   if (chart === "candlestick")
     return (

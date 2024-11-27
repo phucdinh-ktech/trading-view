@@ -1,5 +1,7 @@
 import { Popover } from "antd";
 import { TooltipRef } from "antd/es/tooltip";
+import clsx from "clsx";
+import dayjs from "dayjs";
 import {
   createChart,
   IChartApi,
@@ -9,63 +11,15 @@ import {
   HistogramData,
 } from "lightweight-charts";
 import { MouseEvent, useEffect, useMemo, useRef, useState } from "react";
+import toast from "react-hot-toast";
 
 import InfoMoveChart from "@/components/common/Charts/InfoMoveChart";
 import WrapperRangTime from "@/components/common/RangTime/WrapperRangTime";
 import WrapperSetting from "@/components/common/Setting/WrapperSetting";
+import { useFetchHour } from "@/libs/swr/PairOHLCV";
 import formatPrice from "@/utils/formatPrice";
 
 import useWindowSize from "../../../hooks/useWindowSize";
-import clsx from "clsx";
-
-function generateCandlestickData(
-  days: number,
-  startTime: number
-): {
-  time: UTCTimestamp;
-  open: number;
-  high: number;
-  low: number;
-  close: number;
-}[] {
-  const data = [];
-  let currentOpen = 200 + Math.random() * 50; // Giá trị mở cửa ban đầu
-
-  for (let i = 0; i < days; i++) {
-    const time = (startTime + i * 24 * 60 * 60) as UTCTimestamp; // Mỗi ngày tăng thêm 24 giờ
-
-    const close = currentOpen + (Math.random() - 0.5) * 50; // Đóng cửa chênh lệch so với mở cửa
-    const high = Math.max(currentOpen, close) + Math.random() * 10; // Giá cao nhất
-    const low = Math.min(currentOpen, close) - Math.random() * 10; // Giá thấp nhất
-
-    data.push({ time, open: currentOpen, high, low, close });
-
-    currentOpen = close; // Cập nhật giá mở cửa cho ngày tiếp theo
-  }
-
-  return data;
-}
-
-function generateHistogramData(
-  days: number,
-  startTime: number
-): {
-  time: UTCTimestamp;
-  value: number;
-  color?: string;
-}[] {
-  const data = [];
-
-  for (let i = 0; i < days; i++) {
-    const time = (startTime + i * 24 * 60 * 60) as UTCTimestamp;
-    const value = Math.floor(Math.random() * 75);
-    const color = value > 35 ? "#90d5c9" : "#f5a2a9";
-
-    data.push({ time, value, color });
-  }
-
-  return data;
-}
 
 interface ICandlestickChartProps {
   sizes?: (number | string)[];
@@ -87,8 +41,26 @@ const CandleStickChart = (props: ICandlestickChartProps) => {
     left: 0,
     top: 0,
   });
+
+  const [currentCandleStickData, setCurrentCandleStickData] = useState<
+    CandlestickData[]
+  >([]);
+  const [currentHistogramData, setCurrentHistogramData] = useState<
+    HistogramData[]
+  >([]);
+
+  const [dayLimit, setDayLimit] = useState<number>(24);
+
+  const [newCandlestickData, setNewCandlestickData] =
+    useState<CandlestickData>();
+  const [newHistogramData, setNewHistogramData] = useState<HistogramData>();
   const [price, setPrice] = useState<number>(0);
 
+  const { dataCandleStick, dataHistogram, isLoading } = useFetchHour({
+    fsym: "BTC",
+    tsym: "USD",
+    limit: dayLimit,
+  });
   const handleLeftClick = (e: MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
 
@@ -114,11 +86,9 @@ const CandleStickChart = (props: ICandlestickChartProps) => {
 
       // Điều chỉnh nếu Popover vượt ra ngoài phần tử cha
       if (newLeft + popoverRect.width > parentRect.width) {
-        console.log("newLeft + popoverRect.width > parentRect.width");
         newLeft = parentRect.width - popoverRect.width;
       }
       if (newTop + popoverRect.height > parentRect.height) {
-        console.log("newTop + popoverRect.height > parentRect.height");
         newTop = parentRect.height - popoverRect.height;
       }
 
@@ -138,31 +108,9 @@ const CandleStickChart = (props: ICandlestickChartProps) => {
     setOpenMenu(false);
   };
 
-  const candlestickData = useMemo(() => {
-    const data = generateCandlestickData(120, 1698278400);
-    console.log("candlestickData", data);
-    const latestData = data[data?.length - 1];
-    if (latestData) {
-      setChartMoveData(prev => ({
-        ...prev,
-        candlestick: latestData,
-      }));
-    }
-
-    return data;
-  }, []);
-
-  const histogramData = useMemo(() => {
-    const data = generateHistogramData(120, 1698278400);
-    const latestData = data[data?.length - 1];
-    if (latestData) {
-      setChartMoveData(prev => ({
-        ...prev,
-        histogram: latestData,
-      }));
-    }
-    return data;
-  }, []);
+  const handleChangeLimitDay = (day: number) => {
+    setDayLimit(day);
+  };
   useEffect(() => {
     if (chartContainerRef?.current) {
       const chart = createChart(chartContainerRef.current, {
@@ -205,7 +153,7 @@ const CandleStickChart = (props: ICandlestickChartProps) => {
         wickUpColor: "#26a69a",
         wickDownColor: "#ef5350",
       });
-      candlestickSeries.setData(candlestickData);
+      candlestickSeries.setData(currentCandleStickData || []);
 
       // Histogram
       const histogramChartSeries = chart.addHistogramSeries({
@@ -213,7 +161,7 @@ const CandleStickChart = (props: ICandlestickChartProps) => {
         lastValueVisible: false,
       });
 
-      histogramChartSeries.setData(histogramData);
+      histogramChartSeries.setData(currentHistogramData || []);
 
       // config scale
       chart.timeScale().fitContent();
@@ -249,7 +197,18 @@ const CandleStickChart = (props: ICandlestickChartProps) => {
       chart.applyOptions({
         localization: {
           priceFormatter: formatPrice,
+          // timeFormatter: (ts: UTCTimestamp) =>
+          //   dayjs.unix(ts).format("DD-MM-YYYY HH:mm:ss"),
         },
+        // timeScale: {
+        //   tickMarkFormatter: (ts: UTCTimestamp) => {
+        //     const format = dayjs.unix(ts);
+
+        //     if (format.format("HH:mm") === "00:00")
+        //       return dayjs.unix(ts).format("DD");
+        //     return format.format("HH:mm");
+        //   },
+        // },
       });
     }
     return () => {
@@ -259,8 +218,143 @@ const CandleStickChart = (props: ICandlestickChartProps) => {
         chartRef.current = null;
       }
     };
-  }, [width, sizes, footerSize]);
+  }, [width, sizes, footerSize, currentCandleStickData, currentHistogramData]);
 
+  // useEffect(() => {
+  //   if (chartRef.current) {
+  //     chartRef.current
+  //       .addCandlestickSeries({
+  //         upColor: "#26a69a",
+  //         downColor: "#ef5350",
+  //         borderVisible: false,
+  //         wickUpColor: "#26a69a",
+  //         wickDownColor: "#ef5350",
+  //       })
+  //       .setData(currentCandleStickData || []);
+  //     chartRef.current
+  //       .addHistogramSeries({
+  //         priceLineVisible: false,
+  //         lastValueVisible: false,
+  //       })
+  //       .setData(currentHistogramData || []);
+  //   }
+  // }, [currentCandleStickData, currentHistogramData]);
+
+  useEffect(() => {
+    if (dataCandleStick) {
+      setCurrentCandleStickData(dataCandleStick);
+    }
+    if (dataHistogram) {
+      setCurrentHistogramData(dataHistogram);
+    }
+  }, [dataCandleStick?.length, dataHistogram?.length, isLoading]);
+
+  useEffect(() => {
+    const api_key =
+      "6af44b9120c716f3fe1faadcecbeb4e2a27fa4f6158e7ec942781573f807b64b";
+    const socketInstance = new WebSocket(
+      `wss://streamer.cryptocompare.com/v2?api_key=${api_key}`
+    );
+
+    socketInstance.addEventListener("open", () => {
+      socketInstance.send("Connection established");
+      const subscribeMessage = {
+        action: "SubAdd",
+        subs: ["24~CCCAGG~BTC~USD~m"],
+      };
+      socketInstance.send(JSON.stringify(subscribeMessage));
+      console.log("Connection established and API key sent.");
+    });
+
+    socketInstance.addEventListener("message", event => {
+      const data = JSON.parse(event.data);
+      if (data?.TYPE === "24") {
+        setNewCandlestickData({
+          time: data.TS,
+          open: data.OPEN,
+          close: data.CLOSE,
+          low: data.LOW,
+          high: data.HIGH,
+        });
+
+        setNewHistogramData({
+          time: data.TS,
+          value: data.VOLUMEFROM,
+        });
+      }
+
+      if (data?.TYPE === "429") {
+        toast.error(`Type: ${data?.TYPE} - Message: ${data?.MESSAGE}`);
+      }
+    });
+
+    return () => {
+      if (socketInstance) {
+        socketInstance.close();
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    if (newCandlestickData) {
+      setCurrentCandleStickData(prev => {
+        if (!prev) return prev;
+
+        const lastItem = prev[prev.length - 1];
+
+        const lastTime = dayjs.unix(lastItem.time as number);
+
+        const newTime = dayjs.unix(newCandlestickData.time as number);
+
+        if (!newTime.isAfter(lastTime)) return prev;
+
+        const isSameHour = newTime.isSame(lastTime, "hour");
+
+        if (isSameHour) {
+          // is same hour, update last value
+          const updateLastItem = {
+            time: lastItem.time,
+            open: newCandlestickData.open,
+            close: newCandlestickData.close,
+            high: newCandlestickData.high,
+            low: newCandlestickData.low,
+          };
+          return [...prev.slice(0, -1), updateLastItem];
+        } else {
+          // add new
+          return [...prev, newCandlestickData];
+        }
+      });
+    }
+
+    if (newHistogramData) {
+      setCurrentHistogramData(prev => {
+        if (!prev) return prev;
+        const lastItem = prev[prev.length - 1];
+
+        const lastTime = dayjs.unix(lastItem.time as number);
+
+        const newTime = dayjs.unix(newHistogramData.time as number);
+
+        if (!newTime.isAfter(lastTime)) return prev;
+
+        const isSameHour = newTime.isSame(lastTime, "hour");
+
+        if (isSameHour) {
+          // is same hour, update last value
+          const updateLastItem = {
+            time: lastItem.time,
+            value: newHistogramData.value,
+          };
+          return [...prev.slice(0, -1), updateLastItem];
+        } else {
+          // add new
+          return [...prev, newHistogramData];
+        }
+      });
+    }
+  }, [newCandlestickData?.time, newHistogramData?.time]);
+  // console.log("dataCandleStick", currentCandleStickData);
   const heightCalc: Record<number, string> = {
     7: "md:h-[calc(100vh-120px-65px)]",
     50: "md:h-[calc(50vh-90px)]",
@@ -306,7 +400,10 @@ const CandleStickChart = (props: ICandlestickChartProps) => {
           getPopupContainer={() => chartContainerRef.current || document.body}
         />
       )}
-      <WrapperRangTime chart="candlestick" />
+      <WrapperRangTime
+        chart="candlestick"
+        handleChangeLimitDay={handleChangeLimitDay}
+      />
     </div>
   );
 };
