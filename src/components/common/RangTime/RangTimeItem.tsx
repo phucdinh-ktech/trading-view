@@ -8,9 +8,10 @@ interface IRangTimeItemProps {
   active?: boolean;
   onChange?: (_time: string) => void;
   chart: ChartType;
+  title: string;
 }
 const RangTimeItem = (props: IRangTimeItemProps) => {
-  const { time, active, onChange, chart } = props;
+  const { time, active, onChange, chart, title } = props;
 
   if (chart === "candlestick")
     return (
@@ -21,7 +22,8 @@ const RangTimeItem = (props: IRangTimeItemProps) => {
         )}
         onClick={() => onChange?.(time)}
       >
-        {time}
+        <span className="block md:!hidden">{title}</span>
+        <span className="hidden md:block">{time}</span>
       </Button>
     );
 
@@ -33,7 +35,8 @@ const RangTimeItem = (props: IRangTimeItemProps) => {
       )}
       onClick={() => onChange?.(time)}
     >
-      {time}
+      <span className="block md:hidden">{title}</span>
+      <span className="hidden md:block">{time}</span>
     </Button>
   );
 };

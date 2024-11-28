@@ -7,6 +7,7 @@ const unitData: Record<string, string> = {
   d: "day",
 };
 const generateDays = (period: string): number => {
+  if (period === "ALL") return 2000;
   const today = dayjs();
   const value = parseInt(period.slice(0, -1), 10);
   const unit = period.slice(-1).toLowerCase();
@@ -19,7 +20,6 @@ const generateDays = (period: string): number => {
 
   const fullUnit = unitData[unit] as "year" | "month" | "day";
 
-  console.log("fullUnit", fullUnit);
   const subTract = today.subtract(value, fullUnit);
 
   return today.diff(subTract, "day");

@@ -69,15 +69,6 @@ export const useFetchHour = (params: ParamsQueryType) => {
     },
   });
 
-  console.log("queryString.stringifyUrl", {
-    url: selectUrl,
-    query: {
-      ...params,
-      limit: selectLimit,
-    },
-    limit,
-  });
-
   const { data, isLoading, error, isValidating, mutate } = useSWR<HistoType>(
     url,
     fetcher
@@ -88,7 +79,7 @@ export const useFetchHour = (params: ParamsQueryType) => {
 
   for (const dataHis of data?.Data?.Data || []) {
     dataCandleStick.push({
-      time: (Number(dataHis.time) + 7 * 60 * 60) as UTCTimestamp,
+      time: dataHis.time,
       open: dataHis.open,
       close: dataHis.close,
       low: dataHis.low,
@@ -96,7 +87,7 @@ export const useFetchHour = (params: ParamsQueryType) => {
     });
 
     dataHistogram.push({
-      time: (Number(dataHis.time) + 7 * 60 * 60) as UTCTimestamp,
+      time: dataHis.time,
       value: dataHis.volumefrom,
     });
   }

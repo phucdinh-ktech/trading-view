@@ -1,4 +1,4 @@
-import { Popover } from "antd";
+import { Popover, Spin } from "antd";
 import { TooltipRef } from "antd/es/tooltip";
 import clsx from "clsx";
 import dayjs from "dayjs";
@@ -55,7 +55,9 @@ const CandleStickChart = (props: ICandlestickChartProps) => {
     useState<CandlestickData>();
   const [newHistogramData, setNewHistogramData] = useState<HistogramData>();
   const [price, setPrice] = useState<number>(0);
-
+  const [timeUpdate, setTimeIUpdate] = useState<string>("");
+  const ccStreamerRef = useRef<WebSocket | null>(null);
+  const [currentSubs, setCurrentSubs] = useState<string[]>([]);
   const { dataCandleStick, dataHistogram, isLoading } = useFetchHour({
     fsym: "BTC",
     tsym: "USD",
@@ -196,19 +198,26 @@ const CandleStickChart = (props: ICandlestickChartProps) => {
 
       chart.applyOptions({
         localization: {
-          priceFormatter: formatPrice,
+          // priceFormatter: formatPrice,
           // timeFormatter: (ts: UTCTimestamp) =>
           //   dayjs.unix(ts).format("DD-MM-YYYY HH:mm:ss"),
         },
-        // timeScale: {
-        //   tickMarkFormatter: (ts: UTCTimestamp) => {
-        //     const format = dayjs.unix(ts);
+        timeScale: {
+          tickMarkFormatter: (ts: UTCTimestamp) => {
+            const format = dayjs.unix(ts);
+            if (dayLimit > 5) {
+              if (format.isSame(format.startOf("year"), "day"))
+                return format.format("YYYY");
+              if (format.isSame(format.startOf("month"), "day"))
+                return format.format("MMM");
+              return format.format("DD");
+            }
 
-        //     if (format.format("HH:mm") === "00:00")
-        //       return dayjs.unix(ts).format("DD");
-        //     return format.format("HH:mm");
-        //   },
-        // },
+            if (format.format("HH:mm") === "00:00")
+              return dayjs.unix(ts).format("DD");
+            return format.format("HH:mm");
+          },
+        },
       });
     }
     return () => {
@@ -220,54 +229,30 @@ const CandleStickChart = (props: ICandlestickChartProps) => {
     };
   }, [width, sizes, footerSize, currentCandleStickData, currentHistogramData]);
 
-  // useEffect(() => {
-  //   if (chartRef.current) {
-  //     chartRef.current
-  //       .addCandlestickSeries({
-  //         upColor: "#26a69a",
-  //         downColor: "#ef5350",
-  //         borderVisible: false,
-  //         wickUpColor: "#26a69a",
-  //         wickDownColor: "#ef5350",
-  //       })
-  //       .setData(currentCandleStickData || []);
-  //     chartRef.current
-  //       .addHistogramSeries({
-  //         priceLineVisible: false,
-  //         lastValueVisible: false,
-  //       })
-  //       .setData(currentHistogramData || []);
-  //   }
-  // }, [currentCandleStickData, currentHistogramData]);
-
   useEffect(() => {
-    if (dataCandleStick) {
-      setCurrentCandleStickData(dataCandleStick);
-    }
-    if (dataHistogram) {
-      setCurrentHistogramData(dataHistogram);
+    if (!isLoading) {
+      if (dataCandleStick) {
+        setCurrentCandleStickData(dataCandleStick);
+      }
+      if (dataHistogram) {
+        setCurrentHistogramData(dataHistogram);
+      }
     }
   }, [dataCandleStick?.length, dataHistogram?.length, isLoading]);
 
   useEffect(() => {
-    const api_key =
+    const apiKey =
       "6af44b9120c716f3fe1faadcecbeb4e2a27fa4f6158e7ec942781573f807b64b";
-    const socketInstance = new WebSocket(
-      `wss://streamer.cryptocompare.com/v2?api_key=${api_key}`
+    ccStreamerRef.current = new WebSocket(
+      `wss://streamer.cryptocompare.com/v2?api_key=${apiKey}`
     );
 
-    socketInstance.addEventListener("open", () => {
-      socketInstance.send("Connection established");
-      const subscribeMessage = {
-        action: "SubAdd",
-        subs: ["24~CCCAGG~BTC~USD~m"],
-      };
-      socketInstance.send(JSON.stringify(subscribeMessage));
-      console.log("Connection established and API key sent.");
-    });
+    // Set up the WebSocket connection
 
-    socketInstance.addEventListener("message", event => {
+    ccStreamerRef.current.onmessage = event => {
       const data = JSON.parse(event.data);
+
+      setTimeIUpdate(dayjs().format("DD-MM-YYYY HH:mm:ss"));
       if (data?.TYPE === "24") {
         setNewCandlestickData({
           time: data.TS,
@@ -286,75 +271,204 @@ const CandleStickChart = (props: ICandlestickChartProps) => {
       if (data?.TYPE === "429") {
         toast.error(`Type: ${data?.TYPE} - Message: ${data?.MESSAGE}`);
       }
-    });
-
-    return () => {
-      if (socketInstance) {
-        socketInstance.close();
-      }
     };
-  }, []);
+
+    // Cleanup WebSocket connection on unmount
+    return () => {
+      ccStreamerRef.current?.close();
+    };
+  }, []); // Only run once on mount to avoid creating multiple WebSocket connections
 
   useEffect(() => {
-    if (newCandlestickData) {
+    if (ccStreamerRef.current) {
+      const handleSubscription = () => {
+        if (dayLimit === 1 && !currentSubs.includes("24~CCCAGG~BTC~USD~m")) {
+          if (currentSubs.length > 0) {
+            const unSubRequest = {
+              action: "SubRemove",
+              subs: ["24~CCCAGG~BTC~USD~H", "24~CCCAGG~BTC~USD~D"],
+            };
+            ccStreamerRef.current?.send(JSON.stringify(unSubRequest));
+          }
+
+          const subRequest = {
+            action: "SubAdd",
+            subs: ["24~CCCAGG~BTC~USD~m"],
+          };
+          ccStreamerRef.current?.send(JSON.stringify(subRequest));
+          setCurrentSubs(["24~CCCAGG~BTC~USD~m"]);
+        } else if (
+          dayLimit >= 5 &&
+          dayLimit < 30 &&
+          !currentSubs.includes("24~CCCAGG~BTC~USD~H")
+        ) {
+          const unSubRequest = {
+            action: "SubRemove",
+            subs: ["24~CCCAGG~BTC~USD~m", "24~CCCAGG~BTC~USD~D"],
+          };
+          ccStreamerRef.current?.send(JSON.stringify(unSubRequest));
+
+          const subRequest = {
+            action: "SubAdd",
+            subs: ["24~CCCAGG~BTC~USD~H"],
+          };
+          ccStreamerRef.current?.send(JSON.stringify(subRequest));
+          setCurrentSubs(["24~CCCAGG~BTC~USD~H"]);
+        } else if (
+          dayLimit >= 30 &&
+          !currentSubs.includes("24~CCCAGG~BTC~USD~D")
+        ) {
+          const unSubRequest = {
+            action: "SubRemove",
+            subs: ["24~CCCAGG~BTC~USD~m", "24~CCCAGG~BTC~USD~H"],
+          };
+          ccStreamerRef.current?.send(JSON.stringify(unSubRequest));
+
+          const subRequest = {
+            action: "SubAdd",
+            subs: ["24~CCCAGG~BTC~USD~D"],
+          };
+          ccStreamerRef.current?.send(JSON.stringify(subRequest));
+          setCurrentSubs(["24~CCCAGG~BTC~USD~D"]);
+        }
+      };
+
+      // Nếu WebSocket đã mở, gọi handleSubscription ngay lập tức
+      if (ccStreamerRef.current.readyState === WebSocket.OPEN) {
+        handleSubscription();
+      } else {
+        // Đảm bảo logic sẽ chạy khi WebSocket mở
+        ccStreamerRef.current.onopen = () => {
+          handleSubscription();
+        };
+      }
+    }
+  }, [dayLimit]);
+
+  useEffect(() => {
+    if (newCandlestickData && newCandlestickData.time) {
       setCurrentCandleStickData(prev => {
         if (!prev) return prev;
 
         const lastItem = prev[prev.length - 1];
 
-        const lastTime = dayjs.unix(lastItem.time as number);
+        const lastTime = dayjs.unix(lastItem?.time as number);
 
-        const newTime = dayjs.unix(newCandlestickData.time as number);
+        const newTime = dayjs.unix(newCandlestickData?.time as number);
 
-        if (!newTime.isAfter(lastTime)) return prev;
+        if (!newTime.isAfter(lastTime) && !newTime.isSame(lastTime)) {
+          return prev;
+        }
 
         const isSameHour = newTime.isSame(lastTime, "hour");
 
-        if (isSameHour) {
-          // is same hour, update last value
-          const updateLastItem = {
-            time: lastItem.time,
-            open: newCandlestickData.open,
-            close: newCandlestickData.close,
-            high: newCandlestickData.high,
-            low: newCandlestickData.low,
-          };
-          return [...prev.slice(0, -1), updateLastItem];
+        const isSameDay = newTime.isSame(lastTime, "day");
+
+        if (dayLimit >= 30) {
+          if (isSameDay) {
+            // is same hour, update last value
+            const updateLastItem = {
+              time: lastItem.time,
+              open: newCandlestickData.open,
+              close: newCandlestickData.close,
+              high: newCandlestickData.high,
+              low: newCandlestickData.low,
+            };
+            setChartMoveData(prev => ({
+              ...prev,
+              candlestick: updateLastItem,
+            }));
+            return [...prev.slice(0, -1), updateLastItem];
+          } else {
+            // add new
+            return [...prev, newCandlestickData];
+          }
         } else {
-          // add new
-          return [...prev, newCandlestickData];
+          if (isSameHour) {
+            // is same hour, update last value
+            const updateLastItem = {
+              time: lastItem.time,
+              open: newCandlestickData.open,
+              close: newCandlestickData.close,
+              high: newCandlestickData.high,
+              low: newCandlestickData.low,
+            };
+
+            setChartMoveData(prev => ({
+              ...prev,
+              candlestick: updateLastItem,
+            }));
+            return [...prev.slice(0, -1), updateLastItem];
+          } else {
+            // add new
+            setChartMoveData(prev => ({
+              ...prev,
+              candlestick: newCandlestickData,
+            }));
+            return [...prev, newCandlestickData];
+          }
         }
       });
     }
 
-    if (newHistogramData) {
+    if (newHistogramData && newHistogramData.time) {
       setCurrentHistogramData(prev => {
         if (!prev) return prev;
+
         const lastItem = prev[prev.length - 1];
+        const lastTime = dayjs(lastItem?.time as number);
 
-        const lastTime = dayjs.unix(lastItem.time as number);
+        const newTime = dayjs(newCandlestickData?.time as number);
 
-        const newTime = dayjs.unix(newHistogramData.time as number);
-
-        if (!newTime.isAfter(lastTime)) return prev;
+        // Skip update if new data is not after the last item
+        if (!newTime.isAfter(lastTime) && !newTime.isSame(lastTime))
+          return prev;
 
         const isSameHour = newTime.isSame(lastTime, "hour");
+        const isSameDay = newTime.isSame(lastTime, "day");
 
-        if (isSameHour) {
-          // is same hour, update last value
-          const updateLastItem = {
-            time: lastItem.time,
-            value: newHistogramData.value,
-          };
-          return [...prev.slice(0, -1), updateLastItem];
+        if (dayLimit >= 30) {
+          // Handling based on the `dayLimit` value
+          if (isSameDay) {
+            // Update the last item's value if the new data is within the same day
+            const updatedLastItem = {
+              time: lastItem.time,
+              value: newHistogramData.value,
+            };
+            setChartMoveData(prev => ({
+              ...prev,
+              histogram: updatedLastItem,
+            }));
+            return [...prev.slice(0, -1), updatedLastItem];
+          } else {
+            // Add the new data
+            return [...prev, newHistogramData];
+          }
         } else {
-          // add new
-          return [...prev, newHistogramData];
+          if (isSameHour) {
+            // Update the last item's value if the new data is within the same hour
+            const updatedLastItem = {
+              time: lastItem.time,
+              value: newHistogramData.value,
+            };
+
+            setChartMoveData(prev => ({
+              ...prev,
+              histogram: updatedLastItem,
+            }));
+            return [...prev.slice(0, -1), updatedLastItem];
+          } else {
+            // Add the new data
+            setChartMoveData(prev => ({
+              ...prev,
+              histogram: newHistogramData,
+            }));
+            return [...prev, newHistogramData];
+          }
         }
       });
     }
-  }, [newCandlestickData?.time, newHistogramData?.time]);
-  // console.log("dataCandleStick", currentCandleStickData);
+  }, [newCandlestickData?.time, newHistogramData?.time, dayLimit, isLoading]);
   const heightCalc: Record<number, string> = {
     7: "md:h-[calc(100vh-120px-65px)]",
     50: "md:h-[calc(50vh-90px)]",
@@ -371,6 +485,12 @@ const CandleStickChart = (props: ICandlestickChartProps) => {
         ref={chartContainerRef}
         onContextMenu={handleRightClick}
       >
+        {isLoading && (
+          <div className="absolute z-40 w-full h-full bg-[rgba(0,0,0,0.3)] flex flex-col justify-center items-center">
+            <Spin size="large" />
+          </div>
+        )}
+
         <InfoMoveChart
           histogram={chartMoveData?.histogram}
           candlestick={chartMoveData?.candlestick}
@@ -403,6 +523,7 @@ const CandleStickChart = (props: ICandlestickChartProps) => {
       <WrapperRangTime
         chart="candlestick"
         handleChangeLimitDay={handleChangeLimitDay}
+        chartContainerRef={chartContainerRef}
       />
     </div>
   );
