@@ -7,6 +7,9 @@ import svgs from "@/assets/svgs";
 import "swiper/css";
 import "swiper/css/navigation";
 import MarketIndexCard from "@/components/common/MarketIndexCard";
+import useFetchTopVolumeFull, {
+  CustomVolumeFullType,
+} from "@/libs/swr/useFetchTopVolumeFull";
 
 import useWindowSize from "../../../hooks/useWindowSize";
 
@@ -15,6 +18,9 @@ const WrapperMarket = () => {
   const swiperRef = useRef<SwiperClass | null>(null);
   const [isFirst, setIsFirst] = useState<boolean>(true);
   const [isLast, setIsLast] = useState<boolean>(false);
+  const [selected, setSelected] = useState<string>();
+  const [subs, setSubs] = useState<string[]>([]);
+  const [currentData, setCurrentData] = useState<CustomVolumeFullType[]>([]);
   const handlePrev = () => {
     swiperRef.current?.slidePrev();
   };
@@ -23,7 +29,24 @@ const WrapperMarket = () => {
     swiperRef.current?.slideNext();
   };
 
-  const length = width >= 1280 ? 4 : 3;
+  const { showData, isLoading } = useFetchTopVolumeFull({
+    tsym: "USD",
+    limit: 16,
+  });
+
+  const chunkArray = (
+    array: CustomVolumeFullType[],
+    size: number
+  ): CustomVolumeFullType[][] => {
+    const result: CustomVolumeFullType[][] = []; // Array of arrays (2D array)
+    for (let i = 0; i < array.length; i += size) {
+      result.push(array.slice(i, i + size));
+    }
+    return result;
+  };
+
+  const chunkedDataDesktop = chunkArray(currentData, 4);
+
   const handleSlideChange = (swiper: SwiperClass) => {
     if (swiper.activeIndex === 0) {
       setIsFirst(true);
@@ -38,6 +61,67 @@ const WrapperMarket = () => {
     setIsFirst(false);
     setIsLast(false);
   };
+
+  const handleSelected = (coinInfoId: string) => {
+    setSelected(coinInfoId);
+  };
+
+  useEffect(() => {
+    if (!isLoading && showData) {
+      setSelected(showData?.[0].Id);
+      const subs = showData.map(item => `5~CCCAGG~${item.Internal}~USD`);
+      setSubs(subs);
+      setCurrentData(showData);
+    }
+  }, [isLoading, showData]);
+
+  useEffect(() => {
+    if (subs.length > 0) {
+      const apiKey =
+        "6af44b9120c716f3fe1faadcecbeb4e2a27fa4f6158e7ec942781573f807b64b";
+      const ccStreamer = new WebSocket(
+        "wss://streamer.cryptocompare.com/v2?api_key=" + apiKey
+      );
+
+      ccStreamer.onopen = function () {
+        const subRequest = {
+          action: "SubAdd",
+          subs: subs, // Example: BTC to USD price and volume data
+        };
+        ccStreamer.send(JSON.stringify(subRequest));
+      };
+
+      ccStreamer.onmessage = function (event) {
+        const data = JSON.parse(event.data);
+        if (data.TYPE === "5") {
+          const realTimeData = currentData.map(item => {
+            if (item.Internal === data.FROMSYMBOL) {
+              const isChange = Number(data.PRICE) !== Number(item.Price);
+
+              const percent = isChange
+                ? ((Number(data.PRICE) - Number(item.Price)) * 100) /
+                  Number(item.Price)
+                : item.PercentChange;
+              return {
+                ...item,
+                PercentChange: percent,
+                Price: data.PRICE,
+              };
+            }
+
+            return item;
+          });
+
+          setCurrentData(realTimeData);
+        }
+      };
+
+      // Clean up the WebSocket connection when the component unmounts
+      return () => {
+        ccStreamer.close();
+      };
+    }
+  }, [subs]);
 
   if (width < 768)
     return (
@@ -54,11 +138,14 @@ const WrapperMarket = () => {
           }}
         >
           <div className="flex justify-start items-center gap-[12px] md:gap-[24px]">
-            {Array.from({
-              length: 10,
-            }).map((_, index) => (
-              <SwiperSlide className="h-full" key={index}>
-                <MarketIndexCard active={index === 0} />
+            {currentData?.map((item, index) => (
+              <SwiperSlide key={index} className="h-full">
+                <MarketIndexCard
+                  key={index}
+                  active={item?.Id === selected}
+                  item={item}
+                  handleSelected={handleSelected}
+                />
               </SwiperSlide>
             ))}
           </div>
@@ -75,33 +162,20 @@ const WrapperMarket = () => {
         }}
         onSlideChange={handleSlideChange}
       >
-        <SwiperSlide className="h-full">
-          <div className="flex justify-start items-center gap-[12px] md:gap-[24px]">
-            {Array.from({
-              length: length,
-            }).map((_, index) => (
-              <MarketIndexCard key={index} active={index === 0} />
-            ))}
-          </div>
-        </SwiperSlide>
-        <SwiperSlide className="h-full">
-          <div className="flex justify-start items-center  gap-[12px] md:gap-[24px]">
-            {Array.from({
-              length: length,
-            }).map((_, index) => (
-              <MarketIndexCard key={index} active={index === 0} />
-            ))}
-          </div>
-        </SwiperSlide>
-        <SwiperSlide className="h-full">
-          <div className="flex justify-start items-center  gap-[12px] md:gap-[24px]">
-            {Array.from({
-              length: length,
-            }).map((_, index) => (
-              <MarketIndexCard key={index} active={index === 0} />
-            ))}
-          </div>
-        </SwiperSlide>
+        {chunkedDataDesktop?.map((chunk, chunkIndex) => (
+          <SwiperSlide key={chunkIndex} className="h-full">
+            <div className="flex justify-start items-center gap-[12px] md:gap-[24px]">
+              {chunk.map((item, index) => (
+                <MarketIndexCard
+                  key={index}
+                  active={item?.Id === selected}
+                  item={item}
+                  handleSelected={handleSelected}
+                />
+              ))}
+            </div>
+          </SwiperSlide>
+        ))}
       </Swiper>
 
       <div

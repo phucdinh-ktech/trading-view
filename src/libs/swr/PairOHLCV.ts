@@ -1,8 +1,4 @@
-import {
-  CandlestickData,
-  HistogramData,
-  UTCTimestamp,
-} from "lightweight-charts";
+import { CandlestickData, HistogramData } from "lightweight-charts";
 import queryString from "query-string";
 import useSWR from "swr";
 
@@ -20,7 +16,6 @@ export const useFetchMinute = (params: ParamsQueryType) => {
     },
   });
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { data, isLoading, error, isValidating, mutate } = useSWR<HistoType>(
     url,
     fetcher
@@ -108,7 +103,6 @@ export const useFetchDay = (params: ParamsQueryType) => {
     query: params,
   });
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { data, isLoading, error, isValidating, mutate } = useSWR<HistoType>(
     url,
     fetcher

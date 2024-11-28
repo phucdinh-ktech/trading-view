@@ -1,3 +1,3 @@
-export function formatNumberWithCommas(number: number): string {
-  return number.toLocaleString("en-US");
+export function formatNumberWithCommas(number: number | string): string {
+  return new Intl.NumberFormat("en-US").format(Number(number));
 }

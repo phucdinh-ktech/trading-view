@@ -5,4 +5,5 @@ export const urls = {
   HISTO_MiMUTE: "v2/histominute",
   HISTO_HOUR: "v2/histohour",
   HISTO_DAY: "v2/histoday",
+  TOP_VOLUME_FULL: "top/totalvolfull",
 };

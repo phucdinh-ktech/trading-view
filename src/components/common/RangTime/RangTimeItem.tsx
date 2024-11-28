@@ -35,7 +35,7 @@ const RangTimeItem = (props: IRangTimeItemProps) => {
       )}
       onClick={() => onChange?.(time)}
     >
-      <span className="block md:hidden">{title}</span>
+      <span className="block md:!hidden">{title}</span>
       <span className="hidden md:block">{time}</span>
     </Button>
   );

@@ -2,30 +2,37 @@ import clsx from "clsx";
 
 import svgs from "@/assets/svgs";
 import AreaChartComponent from "@/components/common/Charts/AreaChart";
+import { CustomVolumeFullType } from "@/libs/swr/useFetchTopVolumeFull";
+import { formatNumberWithCommas } from "@/utils/functions/formatNumberWithCommas";
 
 import useWindowSize from "../../hooks/useWindowSize";
 
 interface IMarketIndexCardProps {
   active?: boolean;
+  item: CustomVolumeFullType;
+  handleSelected?: (coinInfoId: string) => void;
 }
 const MarketIndexCard = (props: IMarketIndexCardProps) => {
-  const { active } = props;
+  const { active, item, handleSelected } = props;
   const { width } = useWindowSize();
 
   if (width < 768)
     return (
-      <div className="w-[152px] min-h-[156px] p-[12px] rounded-[16px] border flex flex-col gap-[4px]">
+      <div
+        className="w-[152px] min-h-[156px] p-[12px] rounded-[16px] border flex flex-col gap-[4px] cursor-pointer"
+        onClick={() => handleSelected?.(item.Id)}
+      >
         <div className="flex items-center gap-[6px]">
           <div className="size-[32px]">
             <img
-              src={svgs.SAndP500}
+              src={item?.ImageUrl}
               className="w-full h-full rounded-full"
               alt="s-and-p-500"
             />
           </div>
           <div className="flex items-center">
             <p className="text-[16px] text-blackApp font-medium leading-[24px] line-clamp-1">
-              S&P 500
+              {item?.FullName}
             </p>
             <div className="size-[18px] ml-[4px]">
               <img
@@ -39,15 +46,23 @@ const MarketIndexCard = (props: IMarketIndexCardProps) => {
         <div>
           <div className="flex gap-[6px]">
             <span className="text-[16px] text-blackApp font-medium leading-[24px]">
-              5,870.63{" "}
+              {formatNumberWithCommas(Number(item?.Price).toFixed(2))}{" "}
               <span className="text-[11px] font-[400] leading-[16px] tracking-[0.4px] ml-[2px]">
-                USD
+                {item.ToSymbol}
               </span>
             </span>
           </div>
-          <p className="text-[16px] text-redApp font-medium leading-[24px]">
-            -1.32%
-          </p>
+          <span
+            className={clsx(
+              "text-[16px font-medium leading-[24px]",
+              Number(item?.PercentChange) > 0 ? "text-greenApp" : "text-redApp"
+            )}
+          >
+            {Number(item?.PercentChange) > 0
+              ? `+${Number(item?.PercentChange).toFixed(6)}`
+              : Number(item?.PercentChange).toFixed(6)}{" "}
+            %
+          </span>
         </div>
 
         <div className="flex flex-col justify-center items-center">
@@ -63,14 +78,15 @@ const MarketIndexCard = (props: IMarketIndexCardProps) => {
   return (
     <div
       className={clsx(
-        "w-[350px] max-w-[350px] rounded-[64px] min-h-[66px] flex flex-col justify-center items-start p-[8px_12px]",
+        "w-[350px] max-w-[350px] rounded-[64px] min-h-[66px] flex flex-col justify-center items-start p-[8px_12px] cursor-pointer",
         active ? "bg-active" : "bg-white"
       )}
+      onClick={() => handleSelected?.(item.Id)}
     >
       <div className="flex items-center gap-[2px_8px]">
         <div className="size-[32px]">
           <img
-            src={svgs.SAndP500}
+            src={item?.ImageUrl}
             className="w-full h-full rounded-full"
             alt="s-and-p-500"
           />
@@ -78,7 +94,7 @@ const MarketIndexCard = (props: IMarketIndexCardProps) => {
         <div>
           <div className="flex items-center">
             <p className="text-[16px] text-blackApp font-medium leading-[24px]">
-              S&P 500
+              {item?.FullName}
             </p>
             <div className="size-[18px] ml-[4px]">
               <img
@@ -91,13 +107,23 @@ const MarketIndexCard = (props: IMarketIndexCardProps) => {
 
           <div className="flex gap-[12px]">
             <span className="text-[16px] text-blackApp font-medium leading-[24px]">
-              5,870.63{" "}
+              {formatNumberWithCommas(Number(item?.Price).toFixed(2))}{" "}
               <span className="text-[11px] font-[400] leading-[16px] tracking-[0.4px] ml-[2px]">
-                USD
+                {item.ToSymbol}
               </span>
             </span>
-            <span className="text-[16px] text-redApp font-medium leading-[24px]">
-              -1.32%
+            <span
+              className={clsx(
+                "text-[16px font-medium leading-[24px]",
+                Number(item?.PercentChange) > 0
+                  ? "text-greenApp"
+                  : "text-redApp"
+              )}
+            >
+              {Number(item?.PercentChange) > 0
+                ? `+${Number(item?.PercentChange).toFixed(6)}`
+                : Number(item?.PercentChange).toFixed(6)}{" "}
+              %
             </span>
           </div>
         </div>

@@ -1,20 +1,19 @@
-import { Divider, Drawer, Popover } from "antd";
+import { Divider, Popover } from "antd";
+import clsx from "clsx";
 import dayjs from "dayjs";
-import { RefObject, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 import icons from "@/assets/icons";
 import RangTimeItem from "@/components/common/RangTime/RangTimeItem";
 import generateDays from "@/utils/functions/generateDays";
-import clsx from "clsx";
 export type ChartType = "candlestick" | undefined;
 
 interface IWrapperRangeTimeProps {
   chart: ChartType;
   handleChangeLimitDay?: (day: number) => void;
-  chartContainerRef?: RefObject<HTMLDivElement>;
 }
 const WrapperRangTime = (props: IWrapperRangeTimeProps) => {
-  const { chart, handleChangeLimitDay, chartContainerRef } = props;
+  const { chart, handleChangeLimitDay } = props;
   const [selectedKey, setSelectedKey] = useState<string>(
     chart === "candlestick" ? "1d" : "1D"
   );
@@ -27,7 +26,6 @@ const WrapperRangTime = (props: IWrapperRangeTimeProps) => {
     handleChangeLimitDay?.(limitDay);
   };
 
-  console.log("chartContainerRef", chartContainerRef);
   const rangData =
     chart === "candlestick"
       ? [
