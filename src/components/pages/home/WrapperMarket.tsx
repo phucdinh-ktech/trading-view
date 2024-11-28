@@ -73,7 +73,7 @@ const WrapperMarket = () => {
       setSubs(subs);
       setCurrentData(showData);
     }
-  }, [isLoading, showData]);
+  }, [isLoading]);
 
   useEffect(() => {
     if (subs.length > 0) {
