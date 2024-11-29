@@ -9,7 +9,7 @@ import generateDays from "@/utils/functions/generateDays";
 export type ChartType = "candlestick" | undefined;
 
 interface IWrapperRangeTimeProps {
-  chart: ChartType;
+  chart?: ChartType;
   handleChangeLimitDay?: (day: number) => void;
 }
 const WrapperRangTime = (props: IWrapperRangeTimeProps) => {

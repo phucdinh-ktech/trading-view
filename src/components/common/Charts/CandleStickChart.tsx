@@ -10,14 +10,13 @@ import {
   CandlestickData,
   HistogramData,
 } from "lightweight-charts";
-import { MouseEvent, useEffect, useMemo, useRef, useState } from "react";
+import { MouseEvent, useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 
 import InfoMoveChart from "@/components/common/Charts/InfoMoveChart";
 import WrapperRangTime from "@/components/common/RangTime/WrapperRangTime";
 import WrapperSetting from "@/components/common/Setting/WrapperSetting";
 import { useFetchHour } from "@/libs/swr/PairOHLCV";
-import formatPrice from "@/utils/formatPrice";
 
 import useWindowSize from "../../../hooks/useWindowSize";
 
@@ -55,7 +54,6 @@ const CandleStickChart = (props: ICandlestickChartProps) => {
     useState<CandlestickData>();
   const [newHistogramData, setNewHistogramData] = useState<HistogramData>();
   const [price, setPrice] = useState<number>(0);
-  const [timeUpdate, setTimeIUpdate] = useState<string>("");
   const ccStreamerRef = useRef<WebSocket | null>(null);
   const [currentSubs, setCurrentSubs] = useState<string[]>([]);
   const { dataCandleStick, dataHistogram, isLoading } = useFetchHour({
@@ -252,7 +250,6 @@ const CandleStickChart = (props: ICandlestickChartProps) => {
     ccStreamerRef.current.onmessage = event => {
       const data = JSON.parse(event.data);
 
-      setTimeIUpdate(dayjs().format("DD-MM-YYYY HH:mm:ss"));
       if (data?.TYPE === "24") {
         setNewCandlestickData({
           time: data.TS,
@@ -523,7 +520,6 @@ const CandleStickChart = (props: ICandlestickChartProps) => {
       <WrapperRangTime
         chart="candlestick"
         handleChangeLimitDay={handleChangeLimitDay}
-        chartContainerRef={chartContainerRef}
       />
     </div>
   );
