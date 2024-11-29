@@ -1,34 +1,40 @@
 import { RightOutlined } from "@ant-design/icons";
-import { TabsProps } from "antd";
+import { useState } from "react";
 
 import AreaChartComponent from "@/components/common/Charts/AreaChart";
-import TabsComponent from "@/components/common/Tabs";
 import WrapperMarket from "@/components/pages/home/WrapperMarket";
+import { CustomVolumeFullType } from "@/libs/swr/useFetchTopVolumeFull";
 
 import useWindowSize from "../../hooks/useWindowSize";
 
 const MarketSummary = () => {
   const { width } = useWindowSize();
 
-  const items: TabsProps["items"] = [
-    {
-      key: "1",
-      label: "Indices",
-      children: <WrapperMarket />,
-    },
-    {
-      key: "2",
-      label: "Stocks",
-      children: <WrapperMarket />,
-    },
-    {
-      key: "3",
-      label: "ETFs",
-      children: <WrapperMarket />,
-    },
-  ];
-  const onChange = (key: string) => {
-    console.log(key);
+  const [volume, setVolume] = useState<CustomVolumeFullType>();
+
+  // const items: TabsProps["items"] = [
+  //   {
+  //     key: "1",
+  //     label: "Indices",
+  //     children: <WrapperMarket handleChangeTsym={handleChangeTsym} />,
+  //   },
+  //   {
+  //     key: "2",
+  //     label: "Stocks",
+  //     children: <WrapperMarket handleChangeTsym={handleChangeTsym} />,
+  //   },
+  //   {
+  //     key: "3",
+  //     label: "ETFs",
+  //     children: <WrapperMarket handleChangeTsym={handleChangeTsym} />,
+  //   },
+  // ];
+  // const onChange = (key: string) => {
+  //   console.log(key);
+  // };
+
+  const handleChangeVolume = (volume: CustomVolumeFullType) => {
+    setVolume(volume);
   };
   return (
     <div className="mt-[24px] md:mt-[32px] md:mb-[24px]">
@@ -36,8 +42,9 @@ const MarketSummary = () => {
         Market summary
         <RightOutlined className="text-[20px] mr-[4px]" />
       </p>
-      <TabsComponent items={items} onChange={onChange} />
-      {width >= 768 && <AreaChartComponent />}
+      {/* <TabsComponent items={items} onChange={onChange} /> */}
+      <WrapperMarket handleChangeVolume={handleChangeVolume} />
+      {width >= 768 && <AreaChartComponent volume={volume} />}
     </div>
   );
 };

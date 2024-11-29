@@ -13,14 +13,17 @@ import useFetchTopVolumeFull, {
 
 import useWindowSize from "../../../hooks/useWindowSize";
 
-const WrapperMarket = () => {
+interface IWrapperMarketProps {
+  handleChangeVolume: (volume: CustomVolumeFullType) => void;
+  volume?: CustomVolumeFullType;
+}
+const WrapperMarket = (props: IWrapperMarketProps) => {
+  const { handleChangeVolume, volume } = props;
   const { width } = useWindowSize();
   const swiperRef = useRef<SwiperClass | null>(null);
   const [isFirst, setIsFirst] = useState<boolean>(true);
   const [isLast, setIsLast] = useState<boolean>(false);
   const [selected, setSelected] = useState<string>();
-  const [subs, setSubs] = useState<string[]>([]);
-  const [currentData, setCurrentData] = useState<CustomVolumeFullType[]>([]);
   const handlePrev = () => {
     swiperRef.current?.slidePrev();
   };
@@ -45,7 +48,7 @@ const WrapperMarket = () => {
     return result;
   };
 
-  const chunkedDataDesktop = chunkArray(currentData, 4);
+  const chunkedDataDesktop = chunkArray(showData, 4);
 
   const handleSlideChange = (swiper: SwiperClass) => {
     if (swiper.activeIndex === 0) {
@@ -62,66 +65,72 @@ const WrapperMarket = () => {
     setIsLast(false);
   };
 
-  const handleSelected = (coinInfoId: string) => {
+  const handleSelected = (coinInfoId: string, volume: CustomVolumeFullType) => {
     setSelected(coinInfoId);
+    handleChangeVolume(volume);
   };
 
   useEffect(() => {
     if (!isLoading && showData) {
       setSelected(showData?.[0].Id);
-      const subs = showData.map(item => `5~CCCAGG~${item.Internal}~USD`);
-      setSubs(subs);
-      setCurrentData(showData);
+      // const subs = showData.map(item => `5~CCCAGG~${item.Internal}~USD`);
+      // setSubs(subs);
+      // setCurrentData(showData);
+      handleChangeVolume(showData?.[0]);
+      // console.log(
+      //   " const subs = showData.map(item => `5~CCCAGG~${item.Internal}~USD`)"
+      // );
     }
   }, [isLoading]);
 
-  useEffect(() => {
-    if (subs.length > 0) {
-      const apiKey =
-        "6af44b9120c716f3fe1faadcecbeb4e2a27fa4f6158e7ec942781573f807b64b";
-      const ccStreamer = new WebSocket(
-        "wss://streamer.cryptocompare.com/v2?api_key=" + apiKey
-      );
+  // useEffect(() => {
+  //   if (subs.length > 0) {
+  //     const apiKey =
+  //       "6af44b9120c716f3fe1faadcecbeb4e2a27fa4f6158e7ec942781573f807b64b";
+  //     const ccStreamer = new WebSocket(
+  //       "wss://streamer.cryptocompare.com/v2?api_key=" + apiKey
+  //     );
 
-      ccStreamer.onopen = function () {
-        const subRequest = {
-          action: "SubAdd",
-          subs: subs, // Example: BTC to USD price and volume data
-        };
-        ccStreamer.send(JSON.stringify(subRequest));
-      };
+  //     ccStreamer.onopen = function () {
+  //       const subRequest = {
+  //         action: "SubAdd",
+  //         subs: subs, // Example: BTC to USD price and volume data
+  //       };
+  //       ccStreamer.send(JSON.stringify(subRequest));
+  //     };
 
-      ccStreamer.onmessage = function (event) {
-        const data = JSON.parse(event.data);
-        if (data.TYPE === "5") {
-          const realTimeData = currentData.map(item => {
-            if (item.Internal === data.FROMSYMBOL) {
-              const isChange = Number(data.PRICE) !== Number(item.Price);
+  //     ccStreamer.onmessage = function (event) {
+  //       const data = JSON.parse(event.data);
+  //       if (data.TYPE === "5") {
+  //         const realTimeData = currentData.map(item => {
+  //           if (item.Internal === data.FROMSYMBOL) {
+  //             const isChange = Number(data.PRICE) !== Number(item.Price);
 
-              const percent = isChange
-                ? ((Number(data.PRICE) - Number(item.Price)) * 100) /
-                  Number(item.Price)
-                : item.PercentChange;
-              return {
-                ...item,
-                PercentChange: percent,
-                Price: data.PRICE,
-              };
-            }
+  //             const percent = isChange
+  //               ? ((Number(data.PRICE) - Number(item.Price)) * 100) /
+  //                 Number(item.Price)
+  //               : item.PercentChange;
 
-            return item;
-          });
+  //             return {
+  //               ...item,
+  //               PercentChange: percent,
+  //               Price: data.PRICE,
+  //             };
+  //           }
 
-          setCurrentData(realTimeData);
-        }
-      };
+  //           return item;
+  //         });
 
-      // Clean up the WebSocket connection when the component unmounts
-      return () => {
-        ccStreamer.close();
-      };
-    }
-  }, [subs]);
+  //         setCurrentData(realTimeData);
+  //       }
+  //     };
+
+  //     // Clean up the WebSocket connection when the component unmounts
+  //     return () => {
+  //       ccStreamer.close();
+  //     };
+  //   }
+  // }, [subs]);
 
   if (width < 768)
     return (
@@ -138,13 +147,14 @@ const WrapperMarket = () => {
           }}
         >
           <div className="flex justify-start items-center gap-[12px] md:gap-[24px]">
-            {currentData?.map((item, index) => (
+            {showData?.map((item, index) => (
               <SwiperSlide key={index} className="h-full">
                 <MarketIndexCard
                   key={index}
                   active={item?.Id === selected}
                   item={item}
                   handleSelected={handleSelected}
+                  volume={volume}
                 />
               </SwiperSlide>
             ))}
@@ -171,6 +181,7 @@ const WrapperMarket = () => {
                   active={item?.Id === selected}
                   item={item}
                   handleSelected={handleSelected}
+                  volume={volume}
                 />
               ))}
             </div>

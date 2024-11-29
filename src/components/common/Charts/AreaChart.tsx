@@ -1,7 +1,12 @@
+import { Spin } from "antd";
 import { createChart, IChartApi, UTCTimestamp } from "lightweight-charts";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import WrapperRangTime from "@/components/common/RangTime/WrapperRangTime";
+import { useFetchExchangeVol } from "@/libs/swr/useFetchExchangeVol";
+import { CustomVolumeFullType } from "@/libs/swr/useFetchTopVolumeFull";
+import formatPrice from "@/utils/formatPrice";
+import tickMarkFormatter_func from "@/utils/functions/tickMarkFormatter";
 
 import useWindowSize from "../../../hooks/useWindowSize";
 
@@ -9,13 +14,23 @@ interface IAreaChartComponentProps {
   chartWidth?: number;
   chartHeight?: number;
   isMobile?: boolean;
+  volume?: CustomVolumeFullType;
 }
 const AreaChartComponent = (props: IAreaChartComponentProps) => {
-  const { chartHeight, chartWidth, isMobile } = props;
+  const { chartHeight, chartWidth, isMobile, volume } = props;
   const chartContainerRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<IChartApi | null>(null);
-
+  const [dayLimit, setDayLimit] = useState<number>(24);
   const { width } = useWindowSize();
+
+  const { exchangeVolChartData, isLoading } = useFetchExchangeVol({
+    tsym: volume?.Internal?.toLowerCase(),
+    limit: dayLimit,
+  });
+
+  const handleChangeLimitDay = (day: number) => {
+    setDayLimit(day);
+  };
 
   useEffect(() => {
     if (chartContainerRef.current) {
@@ -66,40 +81,27 @@ const AreaChartComponent = (props: IAreaChartComponentProps) => {
       chartRef.current = chart;
 
       const areaSeries = chart.addAreaSeries({
-        lineColor: "#f23645",
-        topColor: "#f23645",
+        lineColor: Number(volume?.PercentChange) >= 0 ? "#089981" : "#f23645",
+        topColor: Number(volume?.PercentChange) >= 0 ? "#089981" : "#f23645",
         bottomColor: "#ffffff",
         priceLineVisible: !isMobile,
         lineWidth: 2,
       });
 
-      areaSeries.setData([
-        { time: 1529884800 as UTCTimestamp, value: 236.36 },
-        { time: 1529888400 as UTCTimestamp, value: 245.89 },
-        { time: 1529892000 as UTCTimestamp, value: 220.45 },
-        { time: 1529895600 as UTCTimestamp, value: 260.1 },
-        { time: 1529899200 as UTCTimestamp, value: 200.75 },
-        { time: 1529902800 as UTCTimestamp, value: 290.3 },
-        { time: 1529906400 as UTCTimestamp, value: 210.95 },
-        { time: 1529910000 as UTCTimestamp, value: 270.0 },
-        { time: 1529913600 as UTCTimestamp, value: 230.5 },
-        { time: 1529917200 as UTCTimestamp, value: 250.2 },
-        { time: 1529920800 as UTCTimestamp, value: 220.1 },
-        { time: 1529924400 as UTCTimestamp, value: 280.7 },
-        { time: 1529928000 as UTCTimestamp, value: 210.3 },
-        { time: 1529931600 as UTCTimestamp, value: 275.5 },
-        { time: 1529935200 as UTCTimestamp, value: 230.0 },
-        { time: 1529938800 as UTCTimestamp, value: 260.0 },
-        { time: 1529942400 as UTCTimestamp, value: 220.9 },
-        { time: 1529946000 as UTCTimestamp, value: 245.0 },
-        { time: 1529949600 as UTCTimestamp, value: 225.5 },
-        { time: 1529953200 as UTCTimestamp, value: 290.0 },
-        { time: 1529956800 as UTCTimestamp, value: 210.1 },
-        { time: 1529960400 as UTCTimestamp, value: 270.5 },
-        { time: 1529964000 as UTCTimestamp, value: 230.1 },
-        { time: 1529967600 as UTCTimestamp, value: 260.8 },
-      ]);
-
+      areaSeries.setData(exchangeVolChartData);
+      chart.priceScale("right").applyOptions({
+        autoScale: false,
+        scaleMargins: { top: 0.1, bottom: 0 },
+      });
+      chart.applyOptions({
+        localization: {
+          priceFormatter: formatPrice,
+        },
+        timeScale: {
+          tickMarkFormatter: (ts: UTCTimestamp) =>
+            tickMarkFormatter_func(ts, dayLimit),
+        },
+      });
       chart.timeScale().fitContent();
     }
 
@@ -109,13 +111,19 @@ const AreaChartComponent = (props: IAreaChartComponentProps) => {
         chartRef.current = null;
       }
     };
-  }, [width]);
+  }, [width, exchangeVolChartData, volume]);
 
   return (
     <div>
-      <div ref={chartContainerRef} />
+      <div ref={chartContainerRef} className="relative">
+        {isLoading && (
+          <div className="absolute z-40 w-full h-full bg-[rgba(0,0,0,0.3)] flex flex-col justify-center items-center">
+            <Spin size="large" />
+          </div>
+        )}
+      </div>
       <div className="hidden md:block">
-        <WrapperRangTime />
+        <WrapperRangTime handleChangeLimitDay={handleChangeLimitDay} />
       </div>
     </div>
   );

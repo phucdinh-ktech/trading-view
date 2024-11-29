@@ -10,17 +10,18 @@ import useWindowSize from "../../hooks/useWindowSize";
 interface IMarketIndexCardProps {
   active?: boolean;
   item: CustomVolumeFullType;
-  handleSelected?: (coinInfoId: string) => void;
+  handleSelected?: (coinInfoId: string, volume: CustomVolumeFullType) => void;
+  volume?: CustomVolumeFullType;
 }
 const MarketIndexCard = (props: IMarketIndexCardProps) => {
-  const { active, item, handleSelected } = props;
+  const { active, item, handleSelected, volume } = props;
   const { width } = useWindowSize();
 
   if (width < 768)
     return (
       <div
         className="w-[152px] min-h-[156px] p-[12px] rounded-[16px] border flex flex-col gap-[4px] cursor-pointer"
-        onClick={() => handleSelected?.(item.Id)}
+        onClick={() => handleSelected?.(item.Id, item)}
       >
         <div className="flex items-center gap-[6px]">
           <div className="size-[32px]">
@@ -70,6 +71,7 @@ const MarketIndexCard = (props: IMarketIndexCardProps) => {
             chartHeight={40}
             chartWidth={152 - 2 * 12}
             isMobile
+            volume={volume}
           />
           <p className="text-[12px] text-[#6a6d78] leading-[16px]">1 day</p>
         </div>
@@ -81,7 +83,7 @@ const MarketIndexCard = (props: IMarketIndexCardProps) => {
         "w-[350px] max-w-[350px] rounded-[64px] min-h-[66px] flex flex-col justify-center items-start p-[8px_12px] cursor-pointer",
         active ? "bg-active" : "bg-white"
       )}
-      onClick={() => handleSelected?.(item.Id)}
+      onClick={() => handleSelected?.(item.Id, item)}
     >
       <div className="flex items-center gap-[2px_8px]">
         <div className="size-[32px]">

@@ -17,6 +17,8 @@ import InfoMoveChart from "@/components/common/Charts/InfoMoveChart";
 import WrapperRangTime from "@/components/common/RangTime/WrapperRangTime";
 import WrapperSetting from "@/components/common/Setting/WrapperSetting";
 import { useFetchHour } from "@/libs/swr/PairOHLCV";
+import formatPrice from "@/utils/formatPrice";
+import tickMarkFormatter_func from "@/utils/functions/tickMarkFormatter";
 
 import useWindowSize from "../../../hooks/useWindowSize";
 
@@ -196,30 +198,17 @@ const CandleStickChart = (props: ICandlestickChartProps) => {
 
       chart.applyOptions({
         localization: {
-          // priceFormatter: formatPrice,
+          priceFormatter: formatPrice,
           // timeFormatter: (ts: UTCTimestamp) =>
           //   dayjs.unix(ts).format("DD-MM-YYYY HH:mm:ss"),
         },
         timeScale: {
-          tickMarkFormatter: (ts: UTCTimestamp) => {
-            const format = dayjs.unix(ts);
-            if (dayLimit > 5) {
-              if (format.isSame(format.startOf("year"), "day"))
-                return format.format("YYYY");
-              if (format.isSame(format.startOf("month"), "day"))
-                return format.format("MMM");
-              return format.format("DD");
-            }
-
-            if (format.format("HH:mm") === "00:00")
-              return dayjs.unix(ts).format("DD");
-            return format.format("HH:mm");
-          },
+          tickMarkFormatter: (ts: UTCTimestamp) =>
+            tickMarkFormatter_func(ts, dayLimit),
         },
       });
     }
     return () => {
-      // cancel component when unmount
       if (chartRef.current) {
         chartRef.current.remove();
         chartRef.current = null;
@@ -245,8 +234,6 @@ const CandleStickChart = (props: ICandlestickChartProps) => {
       `wss://streamer.cryptocompare.com/v2?api_key=${apiKey}`
     );
 
-    // Set up the WebSocket connection
-
     ccStreamerRef.current.onmessage = event => {
       const data = JSON.parse(event.data);
 
@@ -270,11 +257,10 @@ const CandleStickChart = (props: ICandlestickChartProps) => {
       }
     };
 
-    // Cleanup WebSocket connection on unmount
     return () => {
       ccStreamerRef.current?.close();
     };
-  }, []); // Only run once on mount to avoid creating multiple WebSocket connections
+  }, []);
 
   useEffect(() => {
     if (ccStreamerRef.current) {
@@ -467,7 +453,7 @@ const CandleStickChart = (props: ICandlestickChartProps) => {
     }
   }, [newCandlestickData?.time, newHistogramData?.time, dayLimit, isLoading]);
   const heightCalc: Record<number, string> = {
-    7: "md:h-[calc(100vh-120px-65px)]",
+    7: "md:h-[calc(100vh-120px-74px)]",
     50: "md:h-[calc(50vh-90px)]",
     100: "md:h-0",
   };
@@ -517,6 +503,7 @@ const CandleStickChart = (props: ICandlestickChartProps) => {
           getPopupContainer={() => chartContainerRef.current || document.body}
         />
       )}
+
       <WrapperRangTime
         chart="candlestick"
         handleChangeLimitDay={handleChangeLimitDay}
